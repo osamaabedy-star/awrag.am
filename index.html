@@ -26,7 +26,7 @@ html, body { font-family: var(--font-family); background: #f1f5f9; direction: rt
 .app { display: grid; grid-template-columns: 290px 1fr; min-height: 100vh; }
 @media (max-width: 960px) { .app { grid-template-columns: 1fr; } }
 
-/* ═══════ SIDEBAR ═══════ */
+/* SIDEBAR */
 .sidebar { background: linear-gradient(180deg, #0a2540 0%, #0d3d5f 60%, #0a2540 100%); color: #fff; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; box-shadow: 6px 0 24px rgba(0,0,0,0.15); z-index: 100; }
 @media (max-width: 960px) { .sidebar { position: fixed; right: -300px; width: 290px; transition: right 0.3s ease; z-index: 1000; } .sidebar.open { right: 0; } }
 .sidebar::-webkit-scrollbar { width: 6px; }
@@ -149,7 +149,6 @@ html, body { font-family: var(--font-family); background: #f1f5f9; direction: rt
 .preview-info { display: none; background: linear-gradient(90deg, #1e6091, #2c7da0); color: #fff; padding: 10px 20px; border-radius: 10px; margin-bottom: 12px; text-align: center; font-size: 11.5pt; font-weight: 700; }
 body.preview-mode .preview-info { display: block; }
 
-/* Modals */
 .modal-panel { display: none; position: fixed; top: 40px; left: 20px; right: 20px; bottom: 20px; background: #fff; border-radius: 14px; box-shadow: 0 15px 50px rgba(0,0,0,0.4); z-index: 1000; flex-direction: column; overflow: hidden; }
 .modal-panel.show { display: flex; }
 .panel-header { padding: 14px 20px; background: linear-gradient(90deg, #1e6091, #2c7da0); color: #fff; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
@@ -220,7 +219,6 @@ body.preview-mode .preview-info { display: block; }
 .arrow-btn { background: #1e6091; color: #fff; border: none; width: 44px; border-radius: 8px; font-size: 16pt; cursor: pointer; font-weight: 700; }
 #fontPreview { font-size: 17pt; padding: 14px; background: #fff; border: 2px dashed #1e6091; border-radius: 10px; text-align: center; line-height: 1.7; margin-bottom: 18px; }
 
-/* Image section */
 .image-drop-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 22px 16px; text-align: center; background: #f8fafc; cursor: pointer; transition: all 0.15s; }
 .image-drop-zone:hover, .image-drop-zone.dragover { border-color: #1e6091; background: #e8f2f8; }
 .image-drop-zone .drop-icon { font-size: 28pt; margin-bottom: 8px; }
@@ -237,7 +235,6 @@ body.preview-mode .preview-info { display: block; }
 .img-path-row input { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12pt; direction: ltr; text-align: left; }
 .img-path-row button { white-space: nowrap; }
 
-/* Print mode options */
 .print-mode-options { display: flex; flex-direction: column; gap: 10px; }
 .print-mode-btn { display: flex; align-items: center; gap: 15px; padding: 14px 18px; background: #fff; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; text-align: right; font-family: inherit; transition: all 0.15s; width: 100%; }
 .print-mode-btn:hover { border-color: #1e6091; background: #e8f2f8; transform: translateY(-1px); }
@@ -246,7 +243,6 @@ body.preview-mode .preview-info { display: block; }
 .pm-title { font-size: 13.5pt; font-weight: 800; color: #1e6091; margin-bottom: 3px; }
 .pm-desc { font-size: 11pt; color: #4a5568; line-height: 1.4; }
 
-/* PAGES */
 #pagesContainer { display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
 .page { width: 210mm; min-height: 297mm; margin: 20px auto; padding: 10mm 12mm 8mm; background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; position: relative; }
 @media screen {
@@ -310,10 +306,65 @@ body.preview-mode .page { outline: 2px dashed var(--primary); outline-offset: 8p
 .unified-lesson-meta { font-size: 9.5pt; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5mm; }
 .unified-lesson-title { font-size: 14pt; font-weight: 800; color: var(--primary-dark); }
 
+/* ★★★ ترويسة النص القرائي الجديدة ★★★ */
+.passage-header {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  padding: 2.5mm 4mm;
+  margin-bottom: 3mm;
+  background: linear-gradient(90deg, var(--primary-light) 0%, transparent 100%);
+  border-radius: 8px;
+  border-bottom: 2px solid var(--primary);
+  flex-shrink: 0;
+}
+.passage-header-badge {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  padding: 1.5mm 3.5mm;
+  border-radius: 20px;
+  font-size: 9pt;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+  min-width: 26mm;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(30,96,145,0.25);
+  text-align: center;
+}
+.passage-header-badge .unit-name {
+  font-size: 8pt;
+  opacity: 0.92;
+  margin-bottom: 0.5mm;
+}
+.passage-header-badge .lesson-name {
+  font-size: 10pt;
+  font-weight: 900;
+}
+.passage-header-title {
+  flex: 1;
+  font-size: 20pt;
+  font-weight: 900;
+  color: var(--primary);
+  text-align: center;
+  margin: 0;
+  line-height: 1.2;
+  padding: 0 2mm;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  word-wrap: break-word;
+}
+.passage-header-spacer {
+  min-width: 26mm;
+  flex-shrink: 0;
+}
+.passage-header.no-badge { justify-content: center; }
+
 .page-passage .passage { font-size: var(--passage-size); line-height: 1.9; color: #111; text-align: justify; flex: 1; padding-top: 2mm; }
 .page-passage .passage p { margin: 0 0 3.5mm; text-indent: 8mm; }
 .passage-page-indicator { text-align: center; font-size: 9.5pt; font-weight: 600; color: var(--text-muted); padding: 1mm 0 2mm; margin-bottom: 2mm; border-bottom: 1px solid var(--border); }
-.passage-meta { text-align: center; font-size: 9.5pt; font-weight: 700; color: var(--primary); padding: 1mm 0 2mm; border-bottom: 1px dashed var(--border); margin-bottom: 2mm; }
 
 .page-questions .questions-flow { flex: 1; padding-top: 1mm; }
 .q-block { border: 1.2px solid var(--border); border-radius: 6px; padding: 1mm 2.5mm 1.2mm; margin-bottom: 1.2mm; background: var(--primary-light); page-break-inside: avoid; break-inside: avoid; }
@@ -448,7 +499,7 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
   .page-questions[data-mode="answer"] .q-option.correct .box::before { content: "✓" !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); color: #c00 !important; font-size: 10pt !important; font-weight: 900 !important; }
   .page-bubble[data-mode="answer"] .bubble.correct .bubble-bg circle { fill: #000 !important; stroke: #000 !important; }
   .page-bubble[data-mode="answer"] .bubble.correct .bubble-letter { color: #fff !important; }
-  .omr-header-main, .omr-header-side, .omr-col-header, .omr-example-correct, .omr-example-wrong, .omr-example-badge, .omr-instructions, .demo-bubble, .demo-bubble svg, .demo-letter, .answer-key-header, .answer-key-table th, .answer-key-table td, .q-text .q-number, .page-number, .cover-frame, .cover-corner, .cover-grade-pill, .cover-term-pill, .cover-ministry, .cover-main-title, .cover-lesson-title, .cover-unit-lesson, .cover-stamp, .cover-stamp-inner, .cover-stamp-text, .cover-stamp-signature, .cover-stamp-divider, .unified-lesson-index { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .omr-header-main, .omr-header-side, .omr-col-header, .omr-example-correct, .omr-example-wrong, .omr-example-badge, .omr-instructions, .demo-bubble, .demo-bubble svg, .demo-letter, .answer-key-header, .answer-key-table th, .answer-key-table td, .q-text .q-number, .page-number, .cover-frame, .cover-corner, .cover-grade-pill, .cover-term-pill, .cover-ministry, .cover-main-title, .cover-lesson-title, .cover-unit-lesson, .cover-stamp, .cover-stamp-inner, .cover-stamp-text, .cover-stamp-signature, .cover-stamp-divider, .unified-lesson-index, .passage-header-badge, .passage-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
 @media screen and (max-width: 850px) {
@@ -463,6 +514,10 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
   .omr-header { flex-direction: column; }
   .lesson-card { flex-direction: column; align-items: flex-start; }
   .stats-grid { grid-template-columns: 1fr; }
+  .passage-header { flex-direction: column; gap: 2mm; }
+  .passage-header-title { font-size: 16pt; }
+  .passage-header-badge { min-width: auto; flex-direction: row; gap: 3mm; }
+  .passage-header-spacer { display: none; }
 }
 </style>
 </head>
@@ -551,7 +606,6 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
 
 <div id="toastContainer"></div>
 
-<!-- Upload Modal -->
 <div class="modal-panel" id="uploadModal">
   <div class="panel-header">
     <h3>📤 رفع ملفات الدروس</h3>
@@ -573,7 +627,6 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
   </div>
 </div>
 
-<!-- Editor Modal -->
 <div class="modal-panel" id="editorPanel">
   <div class="panel-header">
     <h3>✏️ تحرير الدرس</h3>
@@ -588,26 +641,21 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
           <div class="drop-text">اسحب صورة واحدة أو عدة صور · الصق (Ctrl+V) · أو اضغط</div>
         </div>
         <input type="file" id="coverImageInput" accept="image/*" multiple onchange="handleCoverImageUpload(event)" style="display:none;">
-
         <div id="imageGallery" class="image-gallery"></div>
-
         <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
           <button class="btn-small danger" onclick="removeCoverImage()">🗑️ حذف الصورة</button>
           <span id="imageStatus" style="font-size:11pt; color:#2d6a4f; font-weight:700; align-self:center;"></span>
         </div>
-
         <div id="imagePreview" style="margin-top:10px; display:none;">
           <img style="max-width:180px; max-height:120px; border:2px solid #ddd; border-radius:6px;">
         </div>
-
         <label class="fld-label" style="margin-top:14px;">أو ضع مسار صورة موجودة على الموقع:</label>
         <div class="img-path-row">
           <input id="imgPathInput" type="text" placeholder="data/images/nakhla.jpg">
           <button class="btn-small" onclick="setImagePath()">استخدام</button>
         </div>
         <p style="font-size:10.5pt; color:#666; margin-top:8px; line-height:1.6;">
-          💡 <strong>لرفع الصور على GitHub:</strong> ضعها في مجلد <code style="direction:ltr;">data/images/</code>
-          ثم اكتب مسارها هنا. هذا أسرع وأخف من الرفع المباشر.
+          💡 <strong>لرفع الصور على GitHub:</strong> ضعها في مجلد <code style="direction:ltr;">data/images/</code> ثم اكتب مسارها هنا.
         </p>
       </div>
     </details>
@@ -671,7 +719,6 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
   </div>
 </div>
 
-<!-- Settings Modal -->
 <div class="modal-panel" id="settingsPanel">
   <div class="panel-header">
     <h3>⚙️ الإعدادات</h3>
@@ -693,9 +740,6 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
           <label>إظهار الختم في كل الدروس</label>
           <label class="toggle-switch"><input type="checkbox" id="toggleGlobalStamp" onchange="onGlobalStampToggle()"><span class="toggle-slider"></span></label>
         </div>
-        <p style="font-size:11pt; color:#666; margin-top:8px; line-height:1.6;">
-          يمكن التحكم في كل درس على حدة من «خيارات متقدمة» في نافذة التحرير.
-        </p>
       </div>
     </details>
     <details class="form-section">
@@ -771,7 +815,6 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
 </div>
 
 <script>
-/* Helpers */
 function toArabicNum(n) { return String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
 function escapeHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -804,7 +847,6 @@ function showLoading(msg) {
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
 function updateLoading(msg) { document.getElementById('loadingMsg').textContent = msg; }
 
-/* Constants */
 const GRADE_THEMES = {
   grade_1: { name: 'الصف الأول الابتدائي', short: 'الأول', primary: '#c2410c', primaryDark: '#9a3412', primaryLight: '#fff7ed', secondary: '#ea580c', secondaryLight: '#fed7aa' },
   grade_2: { name: 'الصف الثاني الابتدائي', short: 'الثاني', primary: '#15803d', primaryDark: '#166534', primaryLight: '#f0fdf4', secondary: '#16a34a', secondaryLight: '#bbf7d0' },
@@ -828,10 +870,10 @@ const FONTS = [
   { name: "Times New Roman", value: "'Times New Roman', Times, serif" }
 ];
 const ARABIC_LETTERS = ["أ", "ب", "ج", "د"];
-const LIBRARY_KEY = 'reading_ws_library_v18';
-const ACTIVE_KEY = 'reading_ws_active_id_v18';
-const SETTINGS_KEY = 'reading_ws_settings_v18';
-const DELETED_KEY = 'reading_ws_deleted_v18';
+const LIBRARY_KEY = 'reading_ws_library_v19';
+const ACTIVE_KEY = 'reading_ws_active_id_v19';
+const SETTINGS_KEY = 'reading_ws_settings_v19';
+const DELETED_KEY = 'reading_ws_deleted_v19';
 const STORAGE_LIMIT = 5 * 1024 * 1024;
 
 const DEFAULT_LESSON = {
@@ -862,7 +904,6 @@ const DEFAULT_LESSON = {
   ]
 };
 
-/* State */
 let library = [];
 let deletedLessons = [];
 let activeId = null;
@@ -875,7 +916,6 @@ let _svgCounter = 0;
 let _debounceTimer = null;
 let _gradeSearch = '';
 
-/* Settings */
 function getDefaultSettings() {
   return { fontFamily: FONTS[0].value, passageSize: 20, questionSize: 14, optionsSize: 12, coverMainTitleSize: 34, coverLessonSize: 40, unifiedColors: false, teacherName: 'أسامة إبراهيم', showStamp: true };
 }
@@ -900,7 +940,6 @@ function loadSettings() {
 }
 function saveSettings(s) { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch(e) {} }
 
-/* Library */
 function migrateLesson(l) {
   let base = l;
   if (!Array.isArray(l.sections)) {
@@ -945,7 +984,6 @@ function saveLibrary() {
   } catch(e) { showToast('⚠️ ذاكرة المتصفح ممتلئة', 'error', 6000); }
 }
 
-/* Storage */
 function getStorageUsage() {
   let total = 0;
   for (let i = 0; i < localStorage.length; i++) {
@@ -980,7 +1018,6 @@ function renderStorage() {
   }
 }
 
-/* Load from server */
 async function loadFromServer() {
   if (location.protocol === 'file:') return 0;
   const grades = ['grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6'];
@@ -1026,7 +1063,6 @@ async function refreshFromServer(evt) {
   }
 }
 
-/* Validation */
 function validateLesson(l) {
   const errs = [];
   if (!l.lessonTitle || !String(l.lessonTitle).trim()) errs.push("عنوان مفقود");
@@ -1044,7 +1080,6 @@ function validateLesson(l) {
   return errs.length ? errs.join("\n") : null;
 }
 
-/* Grade helpers */
 function getGradeTheme(g) { return GRADE_THEMES[g] || GRADE_THEMES.grade_3; }
 function getGradeName(l) { return getGradeTheme(l.grade || 'grade_3').name; }
 function getUnitLessonLabel(l) {
@@ -1064,7 +1099,6 @@ function applyGradeTheme(el, lesson) {
   el.style.setProperty('--secondary-light', t.secondaryLight);
 }
 
-/* Sidebar */
 function renderSidebarGrades() {
   const c = document.getElementById('sidebarGrades');
   const keys = ['grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6'];
@@ -1092,7 +1126,6 @@ function renderSidebarUser() {
   `;
 }
 
-/* Views */
 function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(name + 'View').classList.add('active');
@@ -1114,7 +1147,6 @@ function renderAll() {
   if (document.getElementById('lessonView').classList.contains('active')) renderActiveLesson();
 }
 
-/* Dashboard */
 function renderDashboard() {
   const totalLessons = library.length;
   const totalQuestions = library.reduce((s, l) => s + l.sections.reduce((ss, sec) => ss + sec.questions.length, 0), 0);
@@ -1126,7 +1158,6 @@ function renderDashboard() {
   `;
 }
 
-/* Grade View */
 function openGrade(gk) {
   currentGrade = gk;
   _gradeSearch = '';
@@ -1251,7 +1282,6 @@ function restoreFromTrash() {
   showToast('♻️ تم استرجاع الكل', 'success');
 }
 
-/* Lesson View */
 function loadLesson(id) {
   const l = library.find(x => x.id === id);
   if (!l) return;
@@ -1265,7 +1295,6 @@ function loadLesson(id) {
 function editLesson(id) { activeId = id; saveLibrary(); openEditor(); }
 function backToGrade() { showView('grade'); renderGradeView(currentGrade); }
 
-/* Upload */
 function openUpload() { closeAllPanels(); document.getElementById('uploadModal').classList.add('show'); }
 function closeUpload() { document.getElementById('uploadModal').classList.remove('show'); }
 function openUploadForGrade(gk) {
@@ -1319,7 +1348,6 @@ async function handleFiles(files, forceGrade) {
   }
 }
 
-/* Export */
 function exportGrade(gk) {
   const lessons = library.filter(l => (l.grade || 'grade_3') === gk);
   if (!lessons.length) { showToast('لا توجد دروس', 'warning'); return; }
@@ -1334,7 +1362,6 @@ function exportGrade(gk) {
   showToast(`✅ تم تصدير ${toArabicNum(lessons.length)} دروس · ضع الملف في مجلد data/`, 'success', 6000);
 }
 
-/* Save as ZIP */
 async function saveAsImages(evt) {
   const btn = evt?.currentTarget;
   if (typeof html2canvas === 'undefined' || typeof JSZip === 'undefined') {
@@ -1380,7 +1407,6 @@ async function quickSaveImages(id) {
   await saveAsImages(null);
 }
 
-/* Toggles */
 function toggleAnswers() {
   currentAnswersVisible = !currentAnswersVisible;
   document.body.classList.toggle("show-answers", currentAnswersVisible);
@@ -1422,7 +1448,6 @@ function executeGradePrint(mode) {
   setTimeout(() => window.print(), 300);
 }
 
-/* Page building */
 function createTestPage(cls, mode) {
   const t = document.createElement('div');
   t.className = 'page ' + cls;
@@ -1452,19 +1477,47 @@ function renderQuestionBlock(q, num) {
   html += '</div></div>';
   return html;
 }
-function paginatePassage(paras) {
+
+/* ★ ترويسة صفحة النص — الوحدة والدرس + العنوان في المنتصف ★ */
+function buildPassageHeader(lesson) {
+  const unitName = (lesson.unitName || '').trim();
+  const lessonLabel = (lesson.lessonLabel || '').trim();
+  const hasBadge = unitName || lessonLabel;
+  if (!hasBadge) {
+    return `<div class="passage-header no-badge">
+      <h2 class="passage-header-title">${escapeHtml(lesson.lessonTitle)}</h2>
+    </div>`;
+  }
+  return `<div class="passage-header">
+    <div class="passage-header-badge">
+      ${unitName ? `<div class="unit-name">${escapeHtml(unitName)}</div>` : ''}
+      ${lessonLabel ? `<div class="lesson-name">${escapeHtml(lessonLabel)}</div>` : ''}
+    </div>
+    <h2 class="passage-header-title">${escapeHtml(lesson.lessonTitle)}</h2>
+    <div class="passage-header-spacer"></div>
+  </div>`;
+}
+
+function paginatePassage(paras, lesson) {
   if (!paras.length) return [[]];
   const t = createTestPage('page-passage');
+  t.innerHTML = buildPassageHeader(lesson);
   const p = document.createElement('div'); p.className = 'passage'; t.appendChild(p);
   const fw = document.createElement('div'); fw.innerHTML = footerHtml(); t.appendChild(fw.firstElementChild);
   document.body.appendChild(t);
   const pages = []; let cur = [];
+  let headerRemoved = false;
   for (const para of paras) {
     const el = document.createElement('p'); el.textContent = para; p.appendChild(el);
     void t.offsetHeight;
     if (testOverflow(t) && cur.length > 0) {
       p.lastElementChild.remove();
       pages.push(cur); cur = [];
+      if (!headerRemoved) {
+        const hdr = t.querySelector('.passage-header');
+        if (hdr) hdr.remove();
+        headerRemoved = true;
+      }
       p.innerHTML = '';
       const np = document.createElement('p'); np.textContent = para; p.appendChild(np);
       void t.offsetHeight;
@@ -1523,7 +1576,7 @@ function paginateBubble(lesson, mode) {
 }
 function buildQOnly(lesson) {
   const pgs = [];
-  paginatePassage(lesson.passage).forEach((p, i, arr) => pgs.push({ type: 'passage', lesson, paragraphs: p, partNum: i + 1, totalParts: arr.length, mode: 'student' }));
+  paginatePassage(lesson.passage, lesson).forEach((p, i, arr) => pgs.push({ type: 'passage', lesson, paragraphs: p, partNum: i + 1, totalParts: arr.length, mode: 'student' }));
   paginateQuestions(lesson.sections, 'student').forEach(items => pgs.push({ type: 'questions', lesson, items, mode: 'student' }));
   return pgs;
 }
@@ -1549,7 +1602,7 @@ function buildAnswer(lesson) {
 function buildPagesForLesson(lesson, mode) {
   const pgs = [{ type: 'cover', lesson }];
   const pm = mode === 'answers' ? 'answer' : 'student';
-  paginatePassage(lesson.passage).forEach((p, i, arr) => pgs.push({ type: 'passage', lesson, paragraphs: p, partNum: i + 1, totalParts: arr.length, mode: pm }));
+  paginatePassage(lesson.passage, lesson).forEach((p, i, arr) => pgs.push({ type: 'passage', lesson, paragraphs: p, partNum: i + 1, totalParts: arr.length, mode: pm }));
   paginateQuestions(lesson.sections, pm).forEach(items => pgs.push({ type: 'questions', lesson, items, mode: pm }));
   if (mode === 'answers') pgs.push(...buildAnswer(lesson));
   else if (lesson.includeBubbleSheet) {
@@ -1583,7 +1636,6 @@ function createPageElement(pd) {
   return d;
 }
 
-/* Render — with stamp visibility control */
 function renderStamp() {
   return `<div class="cover-stamp">
     <div class="cover-stamp-inner">
@@ -1656,13 +1708,19 @@ function renderUnifiedCover(lessons) {
     </div>
   </div>${footerHtml()}`;
 }
+
+/* ★ renderPassage — يستخدم الترويسة الجديدة ★ */
 function renderPassage(pd) {
   const { lesson, paragraphs, partNum, totalParts } = pd;
-  const ul = getUnitLessonLabel(lesson);
-  const meta = ul ? `<div class="passage-meta">${escapeHtml(ul)}</div>` : '';
-  const ind = totalParts > 1 ? `<div class="passage-page-indicator">الجزء ${toArabicNum(partNum)} من ${toArabicNum(totalParts)}</div>` : '';
-  return `${meta}${ind}<div class="passage">${paragraphs.map(p => '<p>' + escapeHtml(p) + '</p>').join('')}</div>${footerHtml()}`;
+  let headerHtml = '';
+  if (partNum === 1) {
+    headerHtml = buildPassageHeader(lesson);
+  } else {
+    headerHtml = `<div class="passage-page-indicator">${escapeHtml(lesson.lessonTitle)} — الجزء ${toArabicNum(partNum)} من ${toArabicNum(totalParts)}</div>`;
+  }
+  return `${headerHtml}<div class="passage">${paragraphs.map(p => '<p>' + escapeHtml(p) + '</p>').join('')}</div>${footerHtml()}`;
 }
+
 function renderQuestions(pd) {
   let content = '';
   pd.items.forEach(i => { content += i.html; });
@@ -1805,7 +1863,6 @@ function renderActiveLesson() {
   renderPages(buildPagesForLesson(l, currentPreviewMode === 'answers' ? 'answers' : 'student'));
 }
 
-/* Editor */
 function openEditor() {
   closeAllPanels();
   if (!activeId) { showToast('اختر درسًا أولًا', 'warning'); return; }
@@ -1936,7 +1993,6 @@ function applyForm() {
   showToast('✅ تم الحفظ', 'success');
 }
 
-/* Image handling */
 async function handleCoverImageUpload(e) {
   const files = e.target.files;
   if (!files || !files.length) return;
@@ -2029,7 +2085,6 @@ function resizeImage(file, max) {
   });
 }
 
-/* Settings */
 function openSettings() {
   closeAllPanels();
   currentSettings = loadSettings();
@@ -2117,7 +2172,6 @@ function resetSettings() {
   showToast('↺ تم استعادة الافتراضي', 'success');
 }
 
-/* Listeners */
 window.addEventListener('DOMContentLoaded', () => {
   const dz1 = document.getElementById('dashUploadZone');
   if (dz1) {
