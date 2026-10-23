@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فهم المقروء – مكتبة أوراق العمل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary: #1e6091; --primary-dark: #0d4a73; --primary-light: #e8f2f8;
+  --secondary: #2c7da0; --secondary-light: #d4e8f0;
+  --success: #2d6a4f; --text: #1a202c; --text-muted: #4a5568;
+  --border: #cbd5e0; --red: #c53030; --gold: #b8860b;
+  --stamp-navy: #1e3a5f;
+  --font-family: 'Lateef', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+  --passage-size: 20pt; --question-size: 14pt; --options-size: 12pt;
+  --cover-main-title-size: 34pt; --cover-lesson-size: 40pt;
+}
+html, body { font-family: var(--font-family); background: #f1f5f9; direction: rtl; color: var(--text); }
+
+.app { display: grid; grid-template-columns: 290px 1fr; min-height: 100vh; }
+@media (max-width: 960px) { .app { grid-template-columns: 1fr; } }
+
+/* ═══════ SIDEBAR ═══════ */
+.sidebar { background: linear-gradient(180deg, #0a2540 0%, #0d3d5f 60%, #0a2540 100%); color: #fff; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; box-shadow: 6px 0 24px rgba(0,0,0,0.15); z-index: 100; }
+@media (max-width: 960px) { .sidebar { position: fixed; right: -300px; width: 290px; transition: right 0.3s ease; z-index: 1000; } .sidebar.open { right: 0; } }
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+.sidebar-brand { padding: 22px 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.2); }
+.brand-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24pt; box-shadow: 0 6px 16px rgba(251,191,36,0.35); flex-shrink: 0; }
+.brand-text h1 { font-size: 15pt; font-weight: 900; color: #fbbf24; margin: 0 0 3px; line-height: 1.1; }
+.brand-text p { font-size: 9.5pt; color: rgba(255,255,255,0.6); margin: 0; }
+
+.sidebar-nav { padding: 14px 12px 6px; }
+.nav-primary { width: 100%; padding: 12px 16px; background: transparent; color: rgba(255,255,255,0.85); border: none; border-radius: 10px; font-family: inherit; font-size: 13pt; font-weight: 700; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; text-align: right; margin-bottom: 4px; }
+.nav-primary:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-primary.active { background: linear-gradient(135deg, #1e6091, #2c7da0); color: #fff; box-shadow: 0 4px 12px rgba(30,96,145,0.4); }
+.nav-primary .icon { font-size: 15pt; }
+
+.sidebar-section { padding: 12px 12px 8px; }
+.sidebar-section-title { font-size: 10pt; color: rgba(255,255,255,0.45); font-weight: 700; letter-spacing: 2px; padding: 0 8px 10px; }
+.grade-nav-item { width: 100%; padding: 10px 14px; background: transparent; color: rgba(255,255,255,0.8); border: none; border-radius: 9px; font-family: inherit; font-size: 12pt; font-weight: 600; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.15s; text-align: right; margin-bottom: 3px; }
+.grade-nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.grade-nav-item.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 700; }
+.grade-nav-item .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px currentColor; }
+.grade-nav-item .name { flex: 1; }
+.grade-nav-item .count { background: rgba(255,255,255,0.15); padding: 1px 8px; border-radius: 8px; font-size: 10pt; font-weight: 800; min-width: 24px; text-align: center; }
+
+.sidebar-storage { margin: 12px; padding: 12px 14px; background: rgba(255,255,255,0.06); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+.storage-label { font-size: 10pt; color: rgba(255,255,255,0.7); font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.storage-pct { color: #fbbf24; font-size: 10.5pt; }
+.storage-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.storage-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.4s; border-radius: 3px; }
+.storage-fill.warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.storage-fill.danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.storage-info { font-size: 9pt; color: rgba(255,255,255,0.55); display: flex; justify-content: space-between; }
+
+.sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto; }
+.sidebar-action { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-family: inherit; font-size: 12pt; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.15s; margin-bottom: 6px; text-align: right; }
+.sidebar-action:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.2); }
+.sidebar-action.primary { background: linear-gradient(135deg, #f59e0b, #d97706); border-color: transparent; }
+.sidebar-action.primary:hover { background: linear-gradient(135deg, #d97706, #b45309); }
+
+.sidebar-user { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; }
+.user-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #1e6091, #2c7da0); display: flex; align-items: center; justify-content: center; font-size: 15pt; font-weight: 900; color: #fff; flex-shrink: 0; }
+.user-name { font-size: 11pt; font-weight: 800; color: #fff; }
+.user-role { font-size: 9pt; color: rgba(255,255,255,0.55); }
+
+.mobile-toggle { display: none; position: fixed; top: 12px; right: 12px; z-index: 999; background: #1e6091; color: #fff; border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 18pt; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+@media (max-width: 960px) { .mobile-toggle { display: block; } }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+.sidebar-overlay.show { display: block; }
+
+.main { padding: 24px; min-width: 0; background: #f8fafc; }
+@media (max-width: 960px) { .main { padding: 70px 16px 16px; } }
+.view { display: none; }
+.view.active { display: block; }
+
+.welcome-section { background: linear-gradient(135deg, #1e6091, #2d6a4f); color: #fff; padding: 32px; border-radius: 18px; margin-bottom: 24px; position: relative; overflow: hidden; }
+.welcome-section::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 90% 10%, rgba(255,255,255,0.15), transparent 40%); pointer-events: none; }
+.welcome-title { font-size: 26pt; font-weight: 900; margin-bottom: 8px; position: relative; }
+.welcome-subtitle { font-size: 12pt; opacity: 0.9; position: relative; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: #fff; border-radius: 14px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-right: 4px solid #1e6091; display: flex; align-items: center; gap: 14px; }
+.stat-icon { font-size: 32pt; }
+.stat-value { font-size: 24pt; font-weight: 900; color: #1e6091; line-height: 1; }
+.stat-label { font-size: 10.5pt; color: #4a5568; margin-top: 6px; font-weight: 600; }
+
+.upload-zone-large { margin: 0 0 24px; padding: 36px 24px; border: 3px dashed #94a3b8; border-radius: 16px; text-align: center; background: #fff; cursor: pointer; transition: all 0.2s; position: relative; }
+.upload-zone-large:hover, .upload-zone-large.dragover { border-color: #1e6091; background: #e8f2f8; box-shadow: 0 8px 24px rgba(30,96,145,0.15); }
+.upload-zone-large.dragover::after { content: "أفلت الملفات هنا"; position: absolute; inset: 0; background: rgba(30,96,145,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22pt; font-weight: 900; color: #1e6091; }
+.upload-icon { font-size: 48pt; margin-bottom: 10px; }
+.upload-title { font-size: 16pt; font-weight: 800; color: #1e6091; margin-bottom: 6px; }
+.upload-desc { font-size: 11.5pt; color: #4a5568; line-height: 1.6; }
+
+.info-banner { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #fde68a; border-radius: 12px; padding: 16px 20px; font-size: 11.5pt; color: #5d4a00; line-height: 1.7; }
+.info-banner strong { color: #8a6d00; }
+.info-banner.success { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-color: #86efac; color: #166534; }
+
+.grade-header { padding: 26px 28px; border-radius: 16px; color: #fff; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+.grade-header h2 { font-size: 24pt; font-weight: 900; margin-bottom: 5px; }
+.grade-header .sub { font-size: 12.5pt; opacity: 0.9; }
+.grade-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; background: #fff; padding: 12px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); align-items: center; }
+.grade-toolbar button { padding: 9px 16px; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 12pt; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+.search-input { flex: 1; min-width: 180px; padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 12pt; background: #f8fafc; }
+.search-input:focus { outline: none; border-color: #1e6091; background: #fff; }
+.btn-back { background: #4a5568; color: #fff; }
+.btn-upload-grade { background: #2d6a4f; color: #fff; }
+.btn-export-grade { background: #1e6091; color: #fff; }
+.btn-print-grade { background: #b45309; color: #fff; }
+.btn-new { background: #fef3c7; color: #92400e; border: 2px solid #d97706 !important; }
+
+.lesson-card { background: #fff; border: 2px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; transition: all 0.15s; }
+.lesson-card:hover { border-color: var(--primary); box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateX(-3px); }
+.lesson-card-num { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 15pt; font-weight: 900; color: #fff; flex-shrink: 0; }
+.lesson-card-info { flex: 1; min-width: 0; }
+.lesson-card-title { font-size: 14pt; font-weight: 800; color: var(--primary-dark); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lesson-card-meta { font-size: 10.5pt; color: #4a5568; display: flex; gap: 12px; flex-wrap: wrap; }
+.lesson-card-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.lesson-card-actions button { padding: 6px 11px; border: 1.5px solid var(--border); background: #fff; color: var(--primary); border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 11pt; font-weight: 700; transition: all 0.15s; }
+.lesson-card-actions button:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.lesson-card-actions button.del:hover { background: #c0392b; border-color: #c0392b; }
+.lesson-card-actions button.img { background: #fef3c7; color: #92400e; border-color: #f59e0b; }
+.lesson-card-actions button.img:hover { background: #f59e0b; color: #fff; }
+
+.empty-grade { text-align: center; padding: 60px 20px; background: #fff; border-radius: 14px; border: 3px dashed #cbd5e0; }
+.empty-grade-icon { font-size: 52pt; margin-bottom: 16px; opacity: 0.5; }
+.empty-grade-text { font-size: 14pt; color: #4a5568; margin-bottom: 20px; }
+
+.lesson-toolbar { display: flex; align-items: center; gap: 8px; background: #fff; padding: 12px 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 16px; flex-wrap: wrap; position: sticky; top: 10px; z-index: 50; }
+.lesson-toolbar-title { flex: 1; font-size: 14pt; font-weight: 800; color: var(--primary-dark); min-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lesson-toolbar button { padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 11.5pt; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; }
+.lesson-toolbar button:disabled { opacity: 0.5; cursor: not-allowed; }
+.tb-toggle { background: #fef3c7; color: #92400e; border: 1.5px solid #f59e0b !important; }
+.tb-toggle.active { background: #f59e0b; color: #fff; }
+.tb-print { background: #1e6091; color: #fff; }
+.tb-image { background: #7c3aed; color: #fff; }
+.tb-edit { background: #2d6a4f; color: #fff; }
+.tb-back { background: #4a5568; color: #fff; }
+
+.preview-info { display: none; background: linear-gradient(90deg, #1e6091, #2c7da0); color: #fff; padding: 10px 20px; border-radius: 10px; margin-bottom: 12px; text-align: center; font-size: 11.5pt; font-weight: 700; }
+body.preview-mode .preview-info { display: block; }
+
+/* Modals */
+.modal-panel { display: none; position: fixed; top: 40px; left: 20px; right: 20px; bottom: 20px; background: #fff; border-radius: 14px; box-shadow: 0 15px 50px rgba(0,0,0,0.4); z-index: 1000; flex-direction: column; overflow: hidden; }
+.modal-panel.show { display: flex; }
+.panel-header { padding: 14px 20px; background: linear-gradient(90deg, #1e6091, #2c7da0); color: #fff; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.panel-header h3 { margin: 0; font-size: 15pt; }
+.panel-close { background: rgba(255,255,255,0.2); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16pt; font-weight: 700; cursor: pointer; }
+.panel-close:hover { background: rgba(255,255,255,0.35); }
+.panel-body { flex: 1; overflow-y: auto; padding: 18px 22px; background: #f8fafc; }
+.panel-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; background: #f1f5f9; flex-shrink: 0; flex-wrap: wrap; }
+.panel-footer button { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13pt; font-weight: 700; }
+.btn-primary { background: #1e6091; color: #fff; }
+.btn-secondary { background: #4a5568; color: #fff; }
+.btn-danger { background: #c0392b; color: #fff; }
+.btn-success { background: #2d6a4f; color: #fff; }
+
+.form-section { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; background: #fff; overflow: hidden; }
+.form-section > summary { padding: 12px 16px; background: linear-gradient(90deg, #e8f2f8, #ecf7f1); cursor: pointer; font-size: 13pt; font-weight: 700; color: #1e6091; list-style: none; user-select: none; }
+.form-section > summary::-webkit-details-marker { display: none; }
+.form-section > summary::before { content: "▸"; margin-left: 8px; color: #2d6a4f; display: inline-block; transition: transform 0.15s; }
+.form-section[open] > summary::before { transform: rotate(90deg); }
+.form-section > div { padding: 14px 16px; }
+.fld-label { display: block; margin: 10px 0 5px; font-weight: 700; color: #1e6091; font-size: 12pt; }
+.fld-input, .fld-select { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13pt; background: #fff; }
+.fld-input:focus, .fld-select:focus { outline: none; border-color: #1e6091; box-shadow: 0 0 0 3px rgba(30,96,145,0.15); }
+.btn-add { background: #e8f2f8; color: #1e6091; border: 1.5px dashed #1e6091; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 12pt; font-weight: 700; margin-top: 8px; }
+.btn-add:hover { background: #1e6091; color: #fff; }
+.btn-small { background: #1e6091; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 11.5pt; font-weight: 700; white-space: nowrap; }
+.btn-small.secondary { background: #4a5568; }
+.btn-small.danger { background: #c0392b; }
+
+.grade-picker-row { display: flex; gap: 10px; align-items: center; padding: 9px 12px; background: #f8fafc; border: 1.5px solid var(--border); border-radius: 10px; }
+.grade-picker-row select { flex: 1; padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13pt; }
+.grade-color-preview { width: 38px; height: 38px; border-radius: 10px; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); flex-shrink: 0; }
+
+.section-editor { background: #fff; border: 2px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+.section-editor-head { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+.section-editor-head input { flex: 1; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13pt; font-weight: 700; color: #1e6091; }
+.qf-passage { margin-bottom: 10px; }
+.qf-passage-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.qf-passage-text { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13pt; line-height: 1.6; resize: vertical; }
+.qf-list { display: flex; flex-direction: column; gap: 10px; }
+.qf-card { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.qf-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.qf-num { background: #1e6091; color: #fff; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11pt; font-weight: 700; flex-shrink: 0; }
+.qf-q { flex: 1; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 12.5pt; font-weight: 600; }
+.qf-del { background: #fdeaea; color: #c53030; border: 1px solid #f5c2c2; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+.qf-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+.qf-opt-row { display: flex; align-items: stretch; gap: 6px; }
+.qf-radio { display: flex; align-items: center; gap: 3px; padding: 5px 10px; border: 1.5px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 12pt; font-weight: 700; color: #1e6091; background: #fbfdff; white-space: nowrap; }
+.qf-radio:has(input:checked) { background: #fef2f2; border-color: #c53030; color: #c53030; }
+.qf-opt { flex: 1; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 12pt; min-width: 0; }
+
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #edf2f7; gap: 10px; }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-row label { font-weight: 700; color: #1e6091; font-size: 12pt; }
+.toggle-switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #cbd5e0; border-radius: 26px; transition: 0.25s; }
+.toggle-slider::before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: 0.25s; }
+.toggle-switch input:checked + .toggle-slider { background: #2d6a4f; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.setting-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #edf2f7; flex-wrap: wrap; }
+.setting-row label { flex: 0 0 140px; font-weight: 700; color: #1e6091; font-size: 12pt; }
+.setting-row input[type=range] { flex: 1; min-width: 140px; accent-color: #1e6091; }
+.setting-row .val-box { background: #e8f2f8; color: #1e6091; min-width: 55px; text-align: center; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 11pt; }
+.font-picker-row { display: flex; align-items: stretch; gap: 6px; margin-bottom: 12px; }
+.font-picker-row select { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13pt; }
+.arrow-btn { background: #1e6091; color: #fff; border: none; width: 44px; border-radius: 8px; font-size: 16pt; cursor: pointer; font-weight: 700; }
+#fontPreview { font-size: 17pt; padding: 14px; background: #fff; border: 2px dashed #1e6091; border-radius: 10px; text-align: center; line-height: 1.7; margin-bottom: 18px; }
+
+/* Image section */
+.image-drop-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 22px 16px; text-align: center; background: #f8fafc; cursor: pointer; transition: all 0.15s; }
+.image-drop-zone:hover, .image-drop-zone.dragover { border-color: #1e6091; background: #e8f2f8; }
+.image-drop-zone .drop-icon { font-size: 28pt; margin-bottom: 8px; }
+.image-drop-zone .drop-text { color: #1e6091; font-weight: 700; font-size: 12pt; }
+
+.image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 12px; }
+.img-thumb { position: relative; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.15s; background: #fff; }
+.img-thumb:hover { border-color: #1e6091; transform: translateY(-2px); }
+.img-thumb.selected { border-color: #10b981; border-width: 3px; box-shadow: 0 0 0 3px rgba(16,185,129,0.2); }
+.img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-thumb .img-name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); color: #fff; font-size: 8.5pt; padding: 3px 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Segoe UI', sans-serif; direction: ltr; }
+.img-thumb .img-check { position: absolute; top: 5px; left: 5px; background: #10b981; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11pt; }
+.img-path-row { display: flex; gap: 8px; align-items: stretch; margin-top: 12px; }
+.img-path-row input { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12pt; direction: ltr; text-align: left; }
+.img-path-row button { white-space: nowrap; }
+
+/* Print mode options */
+.print-mode-options { display: flex; flex-direction: column; gap: 10px; }
+.print-mode-btn { display: flex; align-items: center; gap: 15px; padding: 14px 18px; background: #fff; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; text-align: right; font-family: inherit; transition: all 0.15s; width: 100%; }
+.print-mode-btn:hover { border-color: #1e6091; background: #e8f2f8; transform: translateY(-1px); }
+.pm-icon { font-size: 26pt; flex-shrink: 0; }
+.pm-info { flex: 1; }
+.pm-title { font-size: 13.5pt; font-weight: 800; color: #1e6091; margin-bottom: 3px; }
+.pm-desc { font-size: 11pt; color: #4a5568; line-height: 1.4; }
+
+/* PAGES */
+#pagesContainer { display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+.page { width: 210mm; min-height: 297mm; margin: 20px auto; padding: 10mm 12mm 8mm; background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; position: relative; }
+@media screen {
+  #pagesContainer .page + .page { margin-top: 45px; }
+  #pagesContainer .page + .page::before { content: '✂ ────────────────────────────────────────────'; position: absolute; top: -32px; left: 50%; transform: translateX(-50%); color: #94a3b8; font-size: 10pt; letter-spacing: 1px; white-space: nowrap; font-family: 'Segoe UI', sans-serif; pointer-events: none; }
+}
+body.preview-mode #pagesContainer { background: #d5dde5; padding: 30px 20px; border-radius: 14px; }
+body.preview-mode .page { outline: 2px dashed var(--primary); outline-offset: 8px; }
+
+.page-cover { padding: 8mm 10mm 6mm; }
+.cover-frame { flex: 1; display: flex; flex-direction: column; position: relative; padding: 14mm 12mm 12mm; background: radial-gradient(circle at 50% 0%, rgba(184,134,11,0.10) 0%, transparent 35%), linear-gradient(180deg, #ffffff 0%, var(--primary-light, #edf4fa) 50%, #ffffff 100%); border: 3px solid var(--primary); border-radius: 4mm; overflow: hidden; }
+.cover-frame::before { content: ""; position: absolute; inset: 4mm; border: 1.5px solid var(--gold); border-radius: 3mm; pointer-events: none; }
+.cover-corner { position: absolute; width: 16mm; height: 16mm; }
+.cover-corner.tl { top: 6mm; left: 6mm; border-top: 2.5px solid var(--gold); border-left: 2.5px solid var(--gold); border-radius: 5mm 0 0 0; }
+.cover-corner.tr { top: 6mm; right: 6mm; border-top: 2.5px solid var(--gold); border-right: 2.5px solid var(--gold); border-radius: 0 5mm 0 0; }
+.cover-corner.bl { bottom: 6mm; left: 6mm; border-bottom: 2.5px solid var(--gold); border-left: 2.5px solid var(--gold); border-radius: 0 0 0 5mm; }
+.cover-corner.br { bottom: 6mm; right: 6mm; border-bottom: 2.5px solid var(--gold); border-right: 2.5px solid var(--gold); border-radius: 0 0 5mm 0; }
+.cover-corner::after { content: "✦"; color: var(--gold); position: absolute; font-size: 11pt; }
+.cover-corner.tl::after { top: 2mm; left: 2mm; }
+.cover-corner.tr::after { top: 2mm; right: 2mm; }
+.cover-corner.bl::after { bottom: 2mm; left: 2mm; }
+.cover-corner.br::after { bottom: 2mm; right: 2mm; }
+
+.cover-stamp { position: absolute; top: 8mm; left: 8mm; width: 50mm; height: 24mm; border: 1.8px solid var(--stamp-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg); background: rgba(255, 255, 255, 0.65); z-index: 3; pointer-events: none; opacity: 0.95; box-shadow: inset 0 0 0 0.15mm rgba(30, 58, 95, 0.1); }
+.cover-stamp::before { content: ""; position: absolute; inset: 1.4mm; border: 0.8px solid var(--stamp-navy); border-radius: 50%; pointer-events: none; opacity: 0.85; }
+.cover-stamp-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2mm; color: var(--stamp-navy); text-align: center; padding: 2mm 3mm; line-height: 1.15; }
+.cover-stamp-text { font-size: 8.5pt; font-weight: 900; letter-spacing: 0.5px; white-space: nowrap; color: var(--stamp-navy); line-height: 1.2; }
+.cover-stamp-divider { width: 65%; height: 0.8px; background: var(--stamp-navy); opacity: 0.55; }
+.cover-stamp-signature { font-size: 6pt; font-weight: 700; font-style: italic; color: var(--stamp-navy); white-space: nowrap; line-height: 1; font-family: 'Segoe Script', 'Brush Script MT', 'Lateef', cursive; }
+
+.cover-header { text-align: center; margin-bottom: 5mm; }
+.cover-country { font-size: 14pt; font-weight: 800; color: var(--primary-dark); margin-bottom: 1.5mm; }
+.cover-ministry { font-size: 10.5pt; font-weight: 600; color: var(--text-muted); padding-bottom: 3mm; border-bottom: 1.5px solid var(--gold); display: inline-block; padding-left: 20mm; padding-right: 20mm; position: relative; }
+.cover-ministry::before, .cover-ministry::after { content: "❁"; position: absolute; top: 50%; transform: translateY(-50%); color: var(--gold); font-size: 10pt; }
+.cover-ministry::before { right: 0; }
+.cover-ministry::after { left: 0; }
+.cover-main-block { text-align: center; margin: 4mm 0 6mm; }
+.cover-main-title { font-size: var(--cover-main-title-size); font-weight: 900; color: var(--primary); letter-spacing: 2px; line-height: 1.15; }
+.cover-divider-ornament { display: flex; align-items: center; justify-content: center; gap: 4mm; margin: 4mm auto 0; max-width: 80%; }
+.cover-divider-ornament .ornament-line { flex: 1; height: 1.5px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.cover-divider-ornament .ornament-icon { color: var(--gold); font-size: 15pt; font-weight: 700; }
+.cover-lesson-block { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4mm 0; }
+.cover-unit-lesson { font-size: 11pt; font-weight: 700; color: var(--primary); background: rgba(30,96,145,0.08); padding: 1.5mm 8mm; border-radius: 20px; margin-bottom: 4mm; letter-spacing: 1px; border: 1px solid rgba(30,96,145,0.2); display: inline-block; }
+.cover-lesson-title { font-size: var(--cover-lesson-size); font-weight: 900; color: var(--primary-dark); text-align: center; line-height: 1.3; margin: 0 0 4mm; padding: 0 6mm; word-wrap: break-word; }
+.cover-image-wrap { margin: 3mm 0; max-width: 65mm; max-height: 45mm; padding: 2mm; background: #fff; border: 2px solid var(--gold); border-radius: 2mm; display: flex; align-items: center; justify-content: center; }
+.cover-image { display: block; max-width: 61mm; max-height: 41mm; object-fit: contain; }
+.cover-grade-block { text-align: center; margin: 4mm 0 5mm; display: flex; justify-content: center; gap: 3mm; flex-wrap: wrap; }
+.cover-grade-pill { display: inline-block; padding: 2.5mm 9mm; border-radius: 20px; font-size: 12pt; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+.cover-term-pill { display: inline-block; padding: 2.5mm 9mm; border-radius: 20px; font-size: 12pt; font-weight: 700; background: #fff; color: var(--secondary); border: 1.5px solid var(--secondary); }
+.cover-info-block { width: 82%; margin: 4mm auto 0; display: flex; flex-direction: column; gap: 5mm; }
+.cover-field { display: flex; align-items: baseline; gap: 4mm; font-size: 14pt; }
+.cover-field label { font-weight: 800; color: var(--primary); min-width: 30mm; }
+.cover-field .line { flex: 1; border-bottom: 2px dotted var(--primary); min-height: 6mm; }
+
+.page-unified-cover .cover-frame { padding: 12mm 12mm 10mm; }
+.unified-lesson-list-block { flex: 1; width: 100%; padding: 2mm 0; display: flex; flex-direction: column; }
+.unified-lesson-list-title { text-align: center; font-size: 13pt; font-weight: 800; color: var(--secondary); letter-spacing: 4px; margin-bottom: 5mm; }
+.unified-lesson-list { list-style: none; padding: 0; margin: 0 auto; max-width: 88%; display: flex; flex-direction: column; gap: 2.5mm; }
+.unified-lesson-list li { display: flex; align-items: center; gap: 3mm; padding: 2mm 3mm; border-bottom: 1px dashed #cbd5e0; border-radius: 4px; background: rgba(255,255,255,0.5); }
+.unified-lesson-index { width: 9mm; height: 9mm; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10pt; flex-shrink: 0; }
+.unified-lesson-meta { font-size: 9.5pt; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5mm; }
+.unified-lesson-title { font-size: 14pt; font-weight: 800; color: var(--primary-dark); }
+
+.page-passage .passage { font-size: var(--passage-size); line-height: 1.9; color: #111; text-align: justify; flex: 1; padding-top: 2mm; }
+.page-passage .passage p { margin: 0 0 3.5mm; text-indent: 8mm; }
+.passage-page-indicator { text-align: center; font-size: 9.5pt; font-weight: 600; color: var(--text-muted); padding: 1mm 0 2mm; margin-bottom: 2mm; border-bottom: 1px solid var(--border); }
+.passage-meta { text-align: center; font-size: 9.5pt; font-weight: 700; color: var(--primary); padding: 1mm 0 2mm; border-bottom: 1px dashed var(--border); margin-bottom: 2mm; }
+
+.page-questions .questions-flow { flex: 1; padding-top: 1mm; }
+.q-block { border: 1.2px solid var(--border); border-radius: 6px; padding: 1mm 2.5mm 1.2mm; margin-bottom: 1.2mm; background: var(--primary-light); page-break-inside: avoid; break-inside: avoid; }
+.q-text { font-size: var(--question-size); font-weight: 700; color: var(--primary-dark); margin: 0 0 0.3mm; line-height: 1.18; }
+.q-text .q-number { display: inline-block; background: var(--primary); color: #fff; width: 4.5mm; height: 4.5mm; line-height: 4.5mm; border-radius: 50%; text-align: center; font-size: 0.72em; margin-left: 1.5mm; vertical-align: middle; font-weight: 800; }
+.q-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.2mm 3mm; font-size: var(--options-size); line-height: 1.22; }
+.q-option { display: flex; align-items: flex-start; gap: 1.3mm; color: var(--text); }
+.q-option .box { display: inline-block; width: 3mm; height: 3mm; min-width: 3mm; border: 1.5px solid #4a5568; border-radius: 1px; margin-top: 0.8mm; position: relative; flex-shrink: 0; }
+.q-option .opt-letter { font-weight: 700; color: var(--primary); }
+body.show-answers .page-questions .q-option.correct { color: var(--red); font-weight: 700; }
+body.show-answers .page-questions .q-option.correct .opt-letter { color: var(--red); }
+body.show-answers .page-questions .q-option.correct .box { border-color: var(--red); background: #fef2f2; }
+body.show-answers .page-questions .q-option.correct .box::before { content: "✓"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); color: var(--red); font-size: 10pt; font-weight: 900; line-height: 1; }
+.page-questions[data-mode="answer"] .q-option.correct, .page-questions[data-mode="answer"] .q-option.correct .opt-letter { color: var(--red); font-weight: 700; }
+.page-questions[data-mode="answer"] .q-option.correct .box { border-color: var(--red); background: #fef2f2; }
+.page-questions[data-mode="answer"] .q-option.correct .box::before { content: "✓"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); color: var(--red); font-size: 10pt; font-weight: 900; }
+
+.omr-header { display: flex; margin-bottom: 2.5mm; border-radius: 8px; overflow: hidden; }
+.omr-header-main { flex: 1; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #fff; padding: 2.5mm 4mm; display: flex; align-items: center; gap: 3mm; }
+.omr-header-icon { width: 10mm; height: 10mm; background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13pt; }
+.omr-header-text { flex: 1; }
+.omr-title { font-size: 13pt; font-weight: 900; margin: 0 0 0.5mm; line-height: 1.1; }
+.omr-subtitle { font-size: 10pt; font-weight: 700; opacity: 0.95; }
+.omr-header-side { background: rgba(255,255,255,0.15); color: #fff; padding: 2.5mm 4mm; display: flex; flex-direction: column; justify-content: center; min-width: 45mm; text-align: center; }
+.omr-lesson-label { font-size: 8pt; opacity: 0.85; margin-bottom: 0.8mm; }
+.omr-lesson-name { font-size: 10.5pt; font-weight: 800; line-height: 1.25; }
+.omr-student-info { display: flex; gap: 3mm; padding: 2mm 3mm; background: var(--primary-light); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 2mm; }
+.omr-field { flex: 1; display: flex; align-items: baseline; gap: 1.5mm; font-size: 9.5pt; }
+.omr-field label { font-weight: 800; color: var(--primary); white-space: nowrap; font-size: 9pt; }
+.omr-field .fill-line { flex: 1; border-bottom: 1.3px dotted var(--primary); height: 4mm; }
+.omr-instructions { background: #fffbf0; border: 1px solid #fde68a; border-radius: 5px; padding: 1.5mm 3mm; margin-bottom: 2mm; font-size: 8pt; color: #5d4a00; }
+.omr-instructions-title { font-weight: 800; color: #8a6d00; font-size: 8.5pt; margin-bottom: 0.8mm; }
+.omr-instructions-list { list-style: none; padding: 0; margin: 0 0 1mm; line-height: 1.3; }
+.omr-instructions-list li { padding-right: 3mm; position: relative; font-size: 8pt; }
+.omr-instructions-list li::before { content: "•"; position: absolute; right: 0; color: #b8860b; font-weight: 900; font-size: 9pt; top: 0.5mm; }
+.omr-examples { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5mm; }
+.omr-example { border-radius: 4px; padding: 1mm 1.5mm; display: flex; flex-direction: column; gap: 0.4mm; }
+.omr-example-correct { border: 1.5px solid #16a34a; background: #f0fdf4; }
+.omr-example-wrong { border: 1.5px solid #dc2626; background: #fef2f2; }
+.omr-example-header { display: flex; align-items: center; gap: 1mm; font-size: 8pt; font-weight: 800; }
+.omr-example-correct .omr-example-header { color: #15803d; }
+.omr-example-wrong .omr-example-header { color: #b91c1c; }
+.omr-example-badge { width: 3.8mm; height: 3.8mm; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7pt; font-weight: 900; color: #fff; flex-shrink: 0; }
+.omr-example-correct .omr-example-badge { background: #16a34a; }
+.omr-example-wrong .omr-example-badge { background: #dc2626; }
+.demo-bubbles-row { display: flex; justify-content: center; align-items: flex-start; gap: 1mm; padding: 0.3mm 0; flex-wrap: wrap; }
+.demo-bubble { width: 4.2mm; height: 4.2mm; position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.demo-bubble svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.demo-bubble > svg > circle { fill: #fff; stroke: var(--primary); stroke-width: 1.6; }
+.demo-bubble.demo-correct > svg > circle { fill: #16a34a !important; stroke: #16a34a !important; }
+.demo-letter { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 6.2pt; font-weight: 800; color: var(--primary); line-height: 1; pointer-events: none; }
+.demo-correct .demo-letter { color: #fff !important; }
+.demo-wrong-item { display: flex; flex-direction: column; align-items: center; gap: 0.2mm; }
+.demo-wrong-caption { font-size: 6.5pt; color: #b91c1c; font-weight: 700; white-space: nowrap; }
+.omr-example-note { text-align: center; font-size: 7pt; font-weight: 600; }
+.omr-example-correct .omr-example-note { color: #15803d; }
+.omr-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8mm; flex: 1; }
+.omr-column { display: flex; flex-direction: column; }
+.omr-col-header { display: grid; grid-template-columns: 10mm 9.5mm 9.5mm 9.5mm 9.5mm; gap: 1.5mm; align-items: center; padding: 1.2mm 2mm; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; border-radius: 4mm 4mm 0 0; font-weight: 800; font-size: 9.5pt; text-align: center; margin-bottom: 0.5mm; }
+.omr-col-header .omr-col-num-head { background: rgba(255,255,255,0.2); border-radius: 3px; padding: 0.5mm; font-weight: 900; }
+.omr-row { display: grid; grid-template-columns: 10mm 9.5mm 9.5mm 9.5mm 9.5mm; gap: 1.5mm; align-items: center; padding: 0.8mm 2mm; border-bottom: 1px dotted #d8e5ef; }
+.omr-row:nth-child(odd) { background: var(--primary-light); }
+.omr-num { font-weight: 900; color: var(--primary); font-size: 10pt; text-align: center; background: #fff; border: 1px solid var(--secondary-light); border-radius: 50%; width: 8mm; height: 8mm; display: flex; align-items: center; justify-content: center; }
+.bubble { width: 8mm; height: 8mm; position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bubble-bg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bubble-bg circle { fill: #ffffff; stroke: var(--primary); stroke-width: 1.6; }
+.bubble-letter { position: relative; font-size: 9pt; font-weight: 800; color: var(--primary); }
+body.show-answers .page-bubble .bubble.correct .bubble-bg circle { fill: #111; stroke: #111; }
+body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
+[data-mode="answer"].page-bubble .bubble.correct .bubble-bg circle { fill: #111; stroke: #111; }
+[data-mode="answer"].page-bubble .bubble.correct .bubble-letter { color: #fff; }
+
+.page-answerkey .answer-key-header { display: flex; align-items: center; gap: 3mm; padding: 2mm 4mm; background: linear-gradient(90deg, #c53030, #e53e3e); color: #fff; border-radius: 6px; margin-bottom: 3mm; }
+.answer-key-table { width: 100%; border-collapse: collapse; font-size: 11pt; }
+.answer-key-table th, .answer-key-table td { border: 1.5px solid var(--primary); padding: 1.5mm 2mm; text-align: center; }
+.answer-key-table th { background: var(--primary-light); color: var(--primary); font-size: 10pt; }
+.answer-key-table td.num { background: var(--primary-light); color: var(--primary); font-weight: 700; }
+.answer-key-table td.ans { color: #c53030; font-weight: 900; font-size: 12pt; }
+.answer-key-note { text-align: center; font-size: 9.5pt; color: var(--text-muted); margin-top: 3mm; padding: 2mm; background: #fff8e1; border-radius: 4px; border: 1px solid #ffe082; }
+.ak-titles { display: flex; flex-direction: column; line-height: 1.3; }
+.ak-main { font-size: 14pt; font-weight: 800; }
+.ak-unit { font-size: 9.5pt; font-weight: 600; opacity: 0.95; margin-top: 1mm; }
+.ak-lesson { font-size: 10.5pt; font-weight: 700; margin-top: 0.5mm; }
+
+.page-footer { margin-top: auto; padding-top: 2mm; border-top: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; gap: 2mm; flex-shrink: 0; min-height: 8mm; }
+.page-footer .teacher-name { font-size: 9pt; font-weight: 700; color: var(--primary); }
+.page-footer .page-number { font-size: 9.5pt; font-weight: 800; color: var(--primary); background: var(--primary-light); min-width: 8mm; height: 6mm; line-height: 6mm; text-align: center; padding: 0 2mm; border-radius: 12px; border: 1px solid var(--secondary-light); }
+.page-footer .page-number.empty { visibility: hidden; }
+.page-footer .tiktok-brand { display: inline-flex; align-items: center; gap: 1.3mm; direction: ltr; unicode-bidi: isolate; }
+.page-footer .tiktok-icon { width: 3.6mm; height: 3.6mm; fill: var(--text); flex-shrink: 0; }
+.page-footer .tiktok-handle { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 9pt; font-weight: 600; color: var(--text); }
+.page-footer .tiktok-at { color: var(--primary); font-weight: 700; }
+
+#toastContainer { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
+.toast { background: #1e6091; color: #fff; padding: 14px 24px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); font-size: 12.5pt; font-weight: 700; display: flex; align-items: center; gap: 12px; pointer-events: auto; animation: toastIn 0.3s ease; max-width: 90vw; }
+.toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+.toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.toast.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.toast .toast-action { background: rgba(255,255,255,0.25); border: none; color: #fff; padding: 6px 14px; border-radius: 6px; font-family: inherit; font-size: 11.5pt; font-weight: 700; cursor: pointer; }
+.toast .toast-action:hover { background: rgba(255,255,255,0.4); }
+@keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+#loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(10, 37, 64, 0.75); backdrop-filter: blur(3px); z-index: 99999; align-items: center; justify-content: center; }
+#loadingOverlay.show { display: flex; }
+.loading-box { background: #fff; padding: 32px 48px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center; min-width: 220px; }
+.loading-spinner { width: 56px; height: 56px; border: 5px solid #e8f2f8; border-top-color: #1e6091; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-msg { font-size: 13pt; font-weight: 700; color: #1e6091; }
+
+@media print {
+  @page { size: A4 portrait; margin: 0; }
+  html, body { background: #fff !important; margin: 0; padding: 0; }
+  .sidebar, .sidebar-overlay, .mobile-toggle, .modal-panel, .no-print, .lesson-toolbar, .preview-info, .grade-toolbar, #dashboardView, #gradeView { display: none !important; }
+  .app { display: block !important; }
+  .main { padding: 0 !important; background: #fff !important; }
+  #lessonView.active { display: block !important; }
+  #pagesContainer { display: block !important; padding: 0 !important; background: #fff !important; }
+  #pagesContainer .page + .page::before { display: none !important; }
+  #pagesContainer .page + .page { margin-top: 0 !important; }
+  body.preview-mode .page { outline: none !important; }
+  .page { width: 210mm; height: 297mm; min-height: 297mm; margin: 0; padding: 10mm 12mm 8mm; box-shadow: none; page-break-after: always; break-after: page; overflow: hidden; }
+  .page:last-of-type { page-break-after: auto; break-after: auto; }
+  .q-block { page-break-inside: avoid; break-inside: avoid; background: #fff !important; border-color: #999 !important; }
+  .page-questions[data-mode="student"] .q-option.correct { color: inherit !important; font-weight: normal !important; }
+  .page-questions[data-mode="student"] .q-option.correct .box { border-color: #4a5568 !important; background: #fff !important; }
+  .page-questions[data-mode="student"] .q-option.correct .box::before { content: none !important; }
+  .page-questions[data-mode="student"] .q-option.correct .opt-letter { color: var(--primary) !important; font-weight: 700 !important; }
+  .page-bubble[data-mode="student"] .bubble.correct .bubble-bg circle { fill: #fff !important; stroke: var(--primary) !important; }
+  .page-bubble[data-mode="student"] .bubble.correct .bubble-letter { color: var(--primary) !important; }
+  .page-questions[data-mode="answer"] .q-option.correct, .page-questions[data-mode="answer"] .q-option.correct .opt-letter { color: #c00 !important; font-weight: 700 !important; }
+  .page-questions[data-mode="answer"] .q-option.correct .box { border-color: #c00 !important; background: #fef2f2 !important; }
+  .page-questions[data-mode="answer"] .q-option.correct .box::before { content: "✓" !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); color: #c00 !important; font-size: 10pt !important; font-weight: 900 !important; }
+  .page-bubble[data-mode="answer"] .bubble.correct .bubble-bg circle { fill: #000 !important; stroke: #000 !important; }
+  .page-bubble[data-mode="answer"] .bubble.correct .bubble-letter { color: #fff !important; }
+  .omr-header-main, .omr-header-side, .omr-col-header, .omr-example-correct, .omr-example-wrong, .omr-example-badge, .omr-instructions, .demo-bubble, .demo-bubble svg, .demo-letter, .answer-key-header, .answer-key-table th, .answer-key-table td, .q-text .q-number, .page-number, .cover-frame, .cover-corner, .cover-grade-pill, .cover-term-pill, .cover-ministry, .cover-main-title, .cover-lesson-title, .cover-unit-lesson, .cover-stamp, .cover-stamp-inner, .cover-stamp-text, .cover-stamp-signature, .cover-stamp-divider, .unified-lesson-index { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+@media screen and (max-width: 850px) {
+  .page { width: 100%; min-height: auto; padding: 5mm; margin: 10px 0; }
+  .q-options { grid-template-columns: repeat(2, 1fr) !important; }
+  .omr-columns { grid-template-columns: 1fr; }
+  .omr-examples { grid-template-columns: 1fr; }
+  .cover-corner { display: none; }
+  .cover-stamp { top: 6mm; left: 6mm; width: 42mm; height: 20mm; }
+  .cover-stamp-text { font-size: 7pt; }
+  .cover-stamp-signature { font-size: 5.5pt; }
+  .omr-header { flex-direction: column; }
+  .lesson-card { flex-direction: column; align-items: flex-start; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">📖</div>
+      <div class="brand-text">
+        <h1>فَهْمُ الْمَقْرُوءِ</h1>
+        <p>مكتبة أوراق العمل</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-primary active" id="navHome" onclick="showView('dashboard')">
+        <span class="icon">🏠</span><span>لوحة التحكم</span>
+      </button>
+    </nav>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">الصفوف الدراسية</div>
+      <div id="sidebarGrades"></div>
+    </div>
+    <div class="sidebar-storage" id="sidebarStorage"></div>
+    <div class="sidebar-footer">
+      <button class="sidebar-action primary" onclick="openUpload()"><span>📤</span><span>رفع ملفات</span></button>
+      <button class="sidebar-action" onclick="refreshFromServer(event)"><span>🔄</span><span>تحديث من الموقع</span></button>
+      <button class="sidebar-action" onclick="openSettings()"><span>⚙️</span><span>الإعدادات</span></button>
+    </div>
+    <div class="sidebar-user" id="sidebarUser"></div>
+  </aside>
+
+  <main class="main">
+    <div class="view active" id="dashboardView">
+      <div class="welcome-section">
+        <div class="welcome-title">أَهْلًا بِكَ 👋</div>
+        <div class="welcome-subtitle">لوحة تحكم أوراق فهم المقروء · إدارة سهلة لكل الصفوف</div>
+      </div>
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="upload-zone-large" id="dashUploadZone">
+        <div class="upload-icon">📂</div>
+        <div class="upload-title">اسحب ملفات JSON هنا أو اضغط للاختيار</div>
+        <div class="upload-desc">رفع ملف واحد أو عدة ملفات · كل درس يُضاف لصفّه تلقائيًا</div>
+        <input type="file" id="dashFileInput" accept=".json,application/json" multiple style="display:none;">
+      </div>
+      <div class="info-banner success">
+        <strong>✅ بياناتك في أمان:</strong> بعد رفع الملفات، تُحفظ تلقائيًا في متصفحك ولا تحتاج لرفعها مجددًا.
+      </div>
+    </div>
+
+    <div class="view" id="gradeView">
+      <div class="grade-header" id="gradeHeader"></div>
+      <div class="grade-toolbar">
+        <input class="search-input" type="text" placeholder="🔍 ابحث في دروس الصف..." oninput="filterLessons(this.value)" id="gradeSearch">
+        <button class="btn-back" onclick="showView('dashboard')">← الرئيسية</button>
+      </div>
+      <div class="grade-toolbar" id="gradeActionsBar"></div>
+      <div id="gradeLessonsList"></div>
+    </div>
+
+    <div class="view" id="lessonView">
+      <div class="lesson-toolbar no-print">
+        <button class="tb-back" onclick="backToGrade()">← عودة</button>
+        <div class="lesson-toolbar-title" id="lessonTitleBar"></div>
+        <button class="tb-toggle" id="tbToggle" onclick="toggleAnswers()">👁️ الحل</button>
+        <button class="tb-toggle" id="tbPreview" onclick="togglePreview()">🔍 معاينة</button>
+        <button class="tb-print" onclick="printActive('student')">🖨️ طباعة</button>
+        <button class="tb-image" onclick="saveAsImages(event)">📸 حفظ كصور</button>
+        <button class="tb-edit" onclick="openEditor()">✏️ تحرير</button>
+      </div>
+      <div class="preview-info" id="previewInfo"></div>
+      <div id="pagesContainer"></div>
+    </div>
+  </main>
+</div>
+
+<div id="loadingOverlay">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div class="loading-msg" id="loadingMsg">جارٍ المعالجة...</div>
+  </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<!-- Upload Modal -->
+<div class="modal-panel" id="uploadModal">
+  <div class="panel-header">
+    <h3>📤 رفع ملفات الدروس</h3>
+    <button class="panel-close" onclick="closeUpload()">×</button>
+  </div>
+  <div class="panel-body">
+    <div class="upload-zone-large" id="modalUploadZone" style="margin:0 0 20px;">
+      <div class="upload-icon">📂</div>
+      <div class="upload-title">اسحب الملفات أو اضغط</div>
+      <div class="upload-desc">صيغة JSON · ملفات متعددة مدعومة</div>
+      <input type="file" id="modalFileInput" accept=".json,application/json" multiple style="display:none;">
+    </div>
+    <div class="info-banner success">
+      <strong>💡 رفع مرة واحدة فقط:</strong> بعد الرفع، تُحفظ الدروس تلقائيًا في متصفحك.
+    </div>
+  </div>
+  <div class="panel-footer">
+    <button class="btn-danger" onclick="closeUpload()">إغلاق</button>
+  </div>
+</div>
+
+<!-- Editor Modal -->
+<div class="modal-panel" id="editorPanel">
+  <div class="panel-header">
+    <h3>✏️ تحرير الدرس</h3>
+    <button class="panel-close" onclick="closeEditor()">×</button>
+  </div>
+  <div class="panel-body">
+    <details class="form-section" open>
+      <summary>📷 صورة الغلاف (اختياري)</summary>
+      <div>
+        <div class="image-drop-zone" id="imageDropZone">
+          <div class="drop-icon">📷</div>
+          <div class="drop-text">اسحب صورة واحدة أو عدة صور · الصق (Ctrl+V) · أو اضغط</div>
+        </div>
+        <input type="file" id="coverImageInput" accept="image/*" multiple onchange="handleCoverImageUpload(event)" style="display:none;">
+
+        <div id="imageGallery" class="image-gallery"></div>
+
+        <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+          <button class="btn-small danger" onclick="removeCoverImage()">🗑️ حذف الصورة</button>
+          <span id="imageStatus" style="font-size:11pt; color:#2d6a4f; font-weight:700; align-self:center;"></span>
+        </div>
+
+        <div id="imagePreview" style="margin-top:10px; display:none;">
+          <img style="max-width:180px; max-height:120px; border:2px solid #ddd; border-radius:6px;">
+        </div>
+
+        <label class="fld-label" style="margin-top:14px;">أو ضع مسار صورة موجودة على الموقع:</label>
+        <div class="img-path-row">
+          <input id="imgPathInput" type="text" placeholder="data/images/nakhla.jpg">
+          <button class="btn-small" onclick="setImagePath()">استخدام</button>
+        </div>
+        <p style="font-size:10.5pt; color:#666; margin-top:8px; line-height:1.6;">
+          💡 <strong>لرفع الصور على GitHub:</strong> ضعها في مجلد <code style="direction:ltr;">data/images/</code>
+          ثم اكتب مسارها هنا. هذا أسرع وأخف من الرفع المباشر.
+        </p>
+      </div>
+    </details>
+    <details class="form-section" open>
+      <summary>📝 معلومات الدرس</summary>
+      <div>
+        <label class="fld-label">الصف الدراسي:</label>
+        <div class="grade-picker-row">
+          <select id="f_grade" onchange="onGradeChange()">
+            <option value="grade_1">الصف الأول الابتدائي</option>
+            <option value="grade_2">الصف الثاني الابتدائي</option>
+            <option value="grade_3">الصف الثالث الابتدائي</option>
+            <option value="grade_4">الصف الرابع الابتدائي</option>
+            <option value="grade_5">الصف الخامس الابتدائي</option>
+            <option value="grade_6">الصف السادس الابتدائي</option>
+          </select>
+          <div class="grade-color-preview" id="gradeColorPreview"></div>
+        </div>
+        <label class="fld-label">اسم الوحدة:</label>
+        <input id="f_unit" class="fld-input" type="text" placeholder="الوحدة الأولى">
+        <label class="fld-label">اسم الدرس:</label>
+        <input id="f_lesson_label" class="fld-input" type="text" placeholder="الدرس الأول">
+        <label class="fld-label">عنوان النص:</label>
+        <input id="f_title" class="fld-input" type="text" placeholder="شجرة النخيل">
+        <label class="fld-label">فقرات النص:</label>
+        <div id="passagesContainer"></div>
+        <button class="btn-add" onclick="addPassage()">+ فقرة</button>
+      </div>
+    </details>
+    <details class="form-section" open>
+      <summary>📋 الأقسام والأسئلة</summary>
+      <div>
+        <div id="sectionsContainer"></div>
+        <button class="btn-add" onclick="addSection()" style="width:100%; padding:10px; margin-top:10px;">+ قسم جديد</button>
+      </div>
+    </details>
+    <details class="form-section">
+      <summary>🎯 خيارات متقدمة</summary>
+      <div>
+        <div class="toggle-row">
+          <label>ورقة تظليل (للطالب)</label>
+          <label class="toggle-switch"><input type="checkbox" id="toggleBubbleSheet"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <label>إظهار الختم في هذا الدرس</label>
+          <label class="toggle-switch"><input type="checkbox" id="toggleStamp"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <label>شكل نموذج الحل:</label>
+          <select id="sel_answerDisplay" class="fld-input" style="width:auto; min-width:180px; padding:6px 10px;">
+            <option value="bubble">ورقة تظليل محلولة</option>
+            <option value="key">مفتاح الإجابة (جدول)</option>
+          </select>
+        </div>
+      </div>
+    </details>
+  </div>
+  <div class="panel-footer">
+    <button class="btn-primary" onclick="applyForm()">✔ حفظ</button>
+    <button class="btn-danger" onclick="closeEditor()">✖ إلغاء</button>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-panel" id="settingsPanel">
+  <div class="panel-header">
+    <h3>⚙️ الإعدادات</h3>
+    <button class="panel-close" onclick="closeSettings()">×</button>
+  </div>
+  <div class="panel-body">
+    <details class="form-section" open>
+      <summary>👤 معلومات المعلم</summary>
+      <div>
+        <label class="fld-label">اسم المعلم:</label>
+        <input id="set_teacherName" class="fld-input" type="text" oninput="onSettingChange()">
+        <p style="font-size:11pt; color:#666; margin-top:8px; line-height:1.6;">يظهر في تذييل كل صفحة وفي الختم</p>
+      </div>
+    </details>
+    <details class="form-section">
+      <summary>🏛️ الختم</summary>
+      <div>
+        <div class="toggle-row">
+          <label>إظهار الختم في كل الدروس</label>
+          <label class="toggle-switch"><input type="checkbox" id="toggleGlobalStamp" onchange="onGlobalStampToggle()"><span class="toggle-slider"></span></label>
+        </div>
+        <p style="font-size:11pt; color:#666; margin-top:8px; line-height:1.6;">
+          يمكن التحكم في كل درس على حدة من «خيارات متقدمة» في نافذة التحرير.
+        </p>
+      </div>
+    </details>
+    <details class="form-section">
+      <summary>🎨 الألوان</summary>
+      <div>
+        <div class="toggle-row">
+          <label>لون موحد (أزرق) لكل الصفوف</label>
+          <label class="toggle-switch"><input type="checkbox" id="toggleUnifiedColors" onchange="onUnifiedColorsToggle()"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </details>
+    <details class="form-section" open>
+      <summary>✒️ الخطوط</summary>
+      <div>
+        <label class="fld-label">نوع الخط:</label>
+        <div class="font-picker-row">
+          <button class="arrow-btn" onclick="cycleFont(-1)">◀</button>
+          <select id="fontSelect" onchange="onFontSelectChange()"></select>
+          <button class="arrow-btn" onclick="cycleFont(1)">▶</button>
+        </div>
+        <div id="fontPreview">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ · شَجَرَةُ النَّخِيلِ</div>
+        <div class="setting-row"><label>النص القرائي:</label><input type="range" id="set_passageSize" min="12" max="26" step="1" oninput="onSettingChange()"><span class="val-box" id="val_passageSize">٢٠</span></div>
+        <div class="setting-row"><label>نص السؤال:</label><input type="range" id="set_questionSize" min="10" max="20" step="1" oninput="onSettingChange()"><span class="val-box" id="val_questionSize">١٤</span></div>
+        <div class="setting-row"><label>الخيارات:</label><input type="range" id="set_optionsSize" min="9" max="18" step="1" oninput="onSettingChange()"><span class="val-box" id="val_optionsSize">١٢</span></div>
+        <div class="setting-row"><label>عنوان الغلاف:</label><input type="range" id="set_coverMainTitleSize" min="20" max="48" step="1" oninput="onSettingChange()"><span class="val-box" id="val_coverMainTitleSize">٣٤</span></div>
+        <div class="setting-row"><label>اسم النص:</label><input type="range" id="set_coverLessonSize" min="24" max="64" step="1" oninput="onSettingChange()"><span class="val-box" id="val_coverLessonSize">٤٠</span></div>
+      </div>
+    </details>
+    <details class="form-section">
+      <summary>💾 بياناتك</summary>
+      <div id="settingsStorageInfo" style="font-size:11.5pt; line-height:1.8;"></div>
+    </details>
+  </div>
+  <div class="panel-footer">
+    <button class="btn-secondary" onclick="resetSettings()">↺ افتراضي</button>
+    <button class="btn-danger" onclick="closeSettings()">✖</button>
+  </div>
+</div>
+
+<div class="modal-panel" id="printDialog">
+  <div class="panel-header">
+    <h3>🖨️ طباعة</h3>
+    <button class="panel-close" onclick="closePrintDialog()">×</button>
+  </div>
+  <div class="panel-body">
+    <div class="print-mode-options">
+      <button class="print-mode-btn" onclick="printActive('student')">
+        <div class="pm-icon">✍️</div>
+        <div class="pm-info"><div class="pm-title">ورقة الطالب</div><div class="pm-desc">النص + الأسئلة + ورقة التظليل</div></div>
+      </button>
+      <button class="print-mode-btn" onclick="printActive('answers')">
+        <div class="pm-icon">✅</div>
+        <div class="pm-info"><div class="pm-title">نموذج الإجابة</div><div class="pm-desc">مع الإجابات الصحيحة</div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-panel" id="gradePrintDialog">
+  <div class="panel-header">
+    <h3>🖨️ طباعة دروس الصف</h3>
+    <button class="panel-close" onclick="closeGradePrintDialog()">×</button>
+  </div>
+  <div class="panel-body">
+    <p style="color:#4a5568; margin-bottom:15px; font-size:12pt;">سيتم طباعة <strong id="gradePrintCount">٠</strong> دروس بغلاف موحّد.</p>
+    <div class="print-mode-options">
+      <button class="print-mode-btn" onclick="executeGradePrint('q_only')"><div class="pm-icon">📝</div><div class="pm-info"><div class="pm-title">أسئلة فقط</div><div class="pm-desc">بدون ورقة تظليل وبدون حل</div></div></button>
+      <button class="print-mode-btn" onclick="executeGradePrint('student')"><div class="pm-icon">✍️</div><div class="pm-info"><div class="pm-title">ورقة الطالب الكاملة</div><div class="pm-desc">النص + الأسئلة + التظليل</div></div></button>
+      <button class="print-mode-btn" onclick="executeGradePrint('interleaved')"><div class="pm-icon">🔀</div><div class="pm-info"><div class="pm-title">أسئلة ثم حل</div><div class="pm-desc">لكل درس: ورقة طالب ← حل</div></div></button>
+      <button class="print-mode-btn" onclick="executeGradePrint('grouped')"><div class="pm-icon">📚</div><div class="pm-info"><div class="pm-title">كل الأسئلة ثم الحلول</div><div class="pm-desc">جميع أوراق الطلاب ثم جميع الحلول</div></div></button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Helpers */
+function toArabicNum(n) { return String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function escapeAttr(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function closeAllPanels() { document.querySelectorAll('.modal-panel.show').forEach(p => p.classList.remove('show')); }
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+function genId(prefix) { return (prefix || 'id') + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9); }
+function showToast(html, type = '', duration = 4500) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = html;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity 0.3s';
+    setTimeout(() => t.remove(), 350);
+  }, duration);
+}
+function showLoading(msg) {
+  document.getElementById('loadingMsg').textContent = msg || 'جارٍ المعالجة...';
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+function updateLoading(msg) { document.getElementById('loadingMsg').textContent = msg; }
+
+/* Constants */
+const GRADE_THEMES = {
+  grade_1: { name: 'الصف الأول الابتدائي', short: 'الأول', primary: '#c2410c', primaryDark: '#9a3412', primaryLight: '#fff7ed', secondary: '#ea580c', secondaryLight: '#fed7aa' },
+  grade_2: { name: 'الصف الثاني الابتدائي', short: 'الثاني', primary: '#15803d', primaryDark: '#166534', primaryLight: '#f0fdf4', secondary: '#16a34a', secondaryLight: '#bbf7d0' },
+  grade_3: { name: 'الصف الثالث الابتدائي', short: 'الثالث', primary: '#1e6091', primaryDark: '#0d4a73', primaryLight: '#e8f2f8', secondary: '#2c7da0', secondaryLight: '#d4e8f0' },
+  grade_4: { name: 'الصف الرابع الابتدائي', short: 'الرابع', primary: '#6d28d9', primaryDark: '#5b21b6', primaryLight: '#f5f3ff', secondary: '#7c3aed', secondaryLight: '#ddd6fe' },
+  grade_5: { name: 'الصف الخامس الابتدائي', short: 'الخامس', primary: '#b45309', primaryDark: '#92400e', primaryLight: '#fffbeb', secondary: '#d97706', secondaryLight: '#fde68a' },
+  grade_6: { name: 'الصف السادس الابتدائي', short: 'السادس', primary: '#0f766e', primaryDark: '#115e59', primaryLight: '#f0fdfa', secondary: '#0d9488', secondaryLight: '#99f6e4' }
+};
+const FONTS = [
+  { name: "Lateef", value: "'Lateef', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif" },
+  { name: "Traditional Arabic", value: "'Traditional Arabic', 'Amiri', 'Segoe UI', Tahoma, Arial, sans-serif" },
+  { name: "Amiri", value: "'Amiri', 'Traditional Arabic', serif" },
+  { name: "Noto Naskh Arabic", value: "'Noto Naskh Arabic', 'Traditional Arabic', serif" },
+  { name: "Scheherazade New", value: "'Scheherazade New', 'Amiri', 'Traditional Arabic', serif" },
+  { name: "Segoe UI", value: "'Segoe UI', Tahoma, Arial, sans-serif" },
+  { name: "Tahoma", value: "Tahoma, 'Segoe UI', Arial, sans-serif" },
+  { name: "Arial", value: "Arial, 'Segoe UI', sans-serif" },
+  { name: "Simplified Arabic", value: "'Simplified Arabic', Tahoma, Arial, sans-serif" },
+  { name: "Dubai", value: "'Dubai', 'Segoe UI', sans-serif" },
+  { name: "Sakkal Majalla", value: "'Sakkal Majalla', 'Traditional Arabic', serif" },
+  { name: "Times New Roman", value: "'Times New Roman', Times, serif" }
+];
+const ARABIC_LETTERS = ["أ", "ب", "ج", "د"];
+const LIBRARY_KEY = 'reading_ws_library_v18';
+const ACTIVE_KEY = 'reading_ws_active_id_v18';
+const SETTINGS_KEY = 'reading_ws_settings_v18';
+const DELETED_KEY = 'reading_ws_deleted_v18';
+const STORAGE_LIMIT = 5 * 1024 * 1024;
+
+const DEFAULT_LESSON = {
+  id: genId('lesson'),
+  lessonTitle: "شَجَرَةُ النَّخِيلِ",
+  grade: "grade_3",
+  unitName: "الوحدة الأولى",
+  lessonLabel: "الدرس الأول",
+  coverImage: null,
+  includeBubbleSheet: true,
+  includeAnswerKey: true,
+  showStamp: true,
+  answerDisplay: 'bubble',
+  passage: ["شَجَرَةُ النَّخِيلِ شَجَرَةٌ مُبَارَكَةٌ، تَنْبُتُ فِي أَرْضِنَا الْحَبِيبَةِ. لِلنَّخْلَةِ جِذْعٌ طَوِيلٌ وَسَعَفٌ أَخْضَرُ يَمْتَدُّ إِلَى السَّمَاءِ."],
+  sections: [
+    { id: 'sec_1', title: "أَسْئِلَةُ فَهْمِ الْمَقْرُوءِ", questions: [
+      { q: "ما الشجرة المباركة التي تحدث عنها النص؟", options: ["النخيل", "الزيتون", "التين", "التفاح"], answer: 0 },
+      { q: "ما لون سعف النخلة كما ورد في النص؟", options: ["أصفر", "بني", "أخضر", "أحمر"], answer: 2 },
+      { q: "بماذا تمتلئ عذوق النخلة؟", options: ["بالزيتون", "بالتمر", "بالتين", "بالعناب"], answer: 1 },
+      { q: "ما الذي يسقي به الفلاح النخلة؟", options: ["الحليب", "الماء", "العصير", "الزيت"], answer: 1 },
+      { q: "ما الذي يجب علينا تجاه النخيل؟", options: ["قطعه", "إهماله", "بيعه", "المحافظة عليه"], answer: 3 }
+    ]},
+    { id: 'sec_2', title: "مَعَانِي الْكَلِمَاتِ", questions: [
+      { q: "ما معنى «مباركة»؟", options: ["قليلة", "كثيرة الخير", "قديمة", "ضعيفة"], answer: 1 },
+      { q: "ما معنى «جذع»؟", options: ["ساق الشجرة", "أوراقها", "ثمرها", "جذورها"], answer: 0 },
+      { q: "ما معنى «سعف»؟", options: ["ثمار النخلة", "أوراقها", "جذورها", "ساقها"], answer: 1 }
+    ]}
+  ]
+};
+
+/* State */
+let library = [];
+let deletedLessons = [];
+let activeId = null;
+let currentGrade = 'grade_3';
+let currentAnswersVisible = false;
+let currentPreviewMode = 'student';
+let draftData = null;
+let uploadedImages = [];
+let _svgCounter = 0;
+let _debounceTimer = null;
+let _gradeSearch = '';
+
+/* Settings */
+function getDefaultSettings() {
+  return { fontFamily: FONTS[0].value, passageSize: 20, questionSize: 14, optionsSize: 12, coverMainTitleSize: 34, coverLessonSize: 40, unifiedColors: false, teacherName: 'أسامة إبراهيم', showStamp: true };
+}
+let currentSettings = getDefaultSettings();
+function applySettings(s) {
+  const r = document.documentElement.style;
+  r.setProperty("--font-family", s.fontFamily);
+  r.setProperty("--passage-size", s.passageSize + "pt");
+  r.setProperty("--question-size", s.questionSize + "pt");
+  r.setProperty("--options-size", s.optionsSize + "pt");
+  r.setProperty("--cover-main-title-size", s.coverMainTitleSize + "pt");
+  r.setProperty("--cover-lesson-size", s.coverLessonSize + "pt");
+  const p = document.getElementById("fontPreview");
+  if (p) p.style.fontFamily = s.fontFamily;
+}
+function loadSettings() {
+  let s = getDefaultSettings();
+  try { const raw = localStorage.getItem(SETTINGS_KEY); if (raw) s = { ...s, ...JSON.parse(raw) }; } catch(e) {}
+  if (!s.teacherName) s.teacherName = 'أسامة إبراهيم';
+  if (typeof s.showStamp !== 'boolean') s.showStamp = true;
+  return s;
+}
+function saveSettings(s) { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch(e) {} }
+
+/* Library */
+function migrateLesson(l) {
+  let base = l;
+  if (!Array.isArray(l.sections)) {
+    const secs = [];
+    if (Array.isArray(l.comprehensionQuestions)) secs.push({ id: 'sec_c', title: "أَسْئِلَةُ فَهْمِ الْمَقْرُوءِ", questions: l.comprehensionQuestions });
+    if (Array.isArray(l.vocabulary)) secs.push({ id: 'sec_v', title: "مَعَانِي الْكَلِمَاتِ", questions: l.vocabulary });
+    if (Array.isArray(l.antonyms)) secs.push({ id: 'sec_a', title: "أَضْدَادُ الْكَلِمَاتِ", questions: l.antonyms });
+    if (Array.isArray(l.languageSkills)) secs.push({ id: 'sec_s', title: "الْمَهَارَاتُ اللُّغَوِيَّةُ", questions: l.languageSkills });
+    base = { id: l.id || genId('lesson'), lessonTitle: l.lessonTitle, coverImage: l.coverImage || null, passage: l.passage, sections: secs };
+  }
+  return {
+    ...base,
+    id: base.id || genId('lesson'),
+    grade: base.grade || 'grade_3',
+    unitName: base.unitName || "",
+    lessonLabel: base.lessonLabel || "",
+    includeBubbleSheet: base.includeBubbleSheet !== false,
+    includeAnswerKey: base.includeAnswerKey !== false,
+    showStamp: base.showStamp !== false,
+    answerDisplay: base.answerDisplay || 'bubble'
+  };
+}
+function loadLibrary() {
+  try {
+    const raw = localStorage.getItem(LIBRARY_KEY);
+    if (raw) library = JSON.parse(raw);
+    const del = localStorage.getItem(DELETED_KEY);
+    if (del) deletedLessons = JSON.parse(del) || [];
+  } catch(e) { library = []; deletedLessons = []; }
+  if (!Array.isArray(library) || !library.length) library = [JSON.parse(JSON.stringify(DEFAULT_LESSON))];
+  library = library.map(migrateLesson);
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  deletedLessons = deletedLessons.filter(d => d.timestamp > weekAgo);
+  activeId = localStorage.getItem(ACTIVE_KEY);
+  saveLibrary();
+}
+function saveLibrary() {
+  try {
+    localStorage.setItem(LIBRARY_KEY, JSON.stringify(library));
+    localStorage.setItem(DELETED_KEY, JSON.stringify(deletedLessons));
+    if (activeId) localStorage.setItem(ACTIVE_KEY, activeId);
+  } catch(e) { showToast('⚠️ ذاكرة المتصفح ممتلئة', 'error', 6000); }
+}
+
+/* Storage */
+function getStorageUsage() {
+  let total = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    const v = localStorage.getItem(k) || '';
+    total += k.length + v.length;
+  }
+  return total;
+}
+function renderStorage() {
+  const usage = getStorageUsage();
+  const pct = Math.min(100, (usage / STORAGE_LIMIT) * 100);
+  const usedMB = (usage / 1024 / 1024).toFixed(2);
+  const limitMB = (STORAGE_LIMIT / 1024 / 1024).toFixed(0);
+  let cls = '';
+  if (pct > 85) cls = 'danger';
+  else if (pct > 60) cls = 'warning';
+  const el = document.getElementById('sidebarStorage');
+  if (el) el.innerHTML = `
+    <div class="storage-label"><span>💾 مساحة التخزين</span><span class="storage-pct">${toArabicNum(Math.round(pct))}%</span></div>
+    <div class="storage-bar"><div class="storage-fill ${cls}" style="width:${pct}%"></div></div>
+    <div class="storage-info"><span>${usedMB} MB</span><span>من ${limitMB} MB</span></div>
+  `;
+  const se = document.getElementById('settingsStorageInfo');
+  if (se) {
+    se.innerHTML = `
+      <div style="margin-bottom:8px;"><strong>المستخدم:</strong> ${usedMB} MB من ${limitMB} MB (${toArabicNum(Math.round(pct))}%)</div>
+      <div style="margin-bottom:8px;"><strong>عدد الدروس:</strong> ${toArabicNum(library.length)}</div>
+      <div style="margin-bottom:8px;"><strong>محذوفات قابلة للاسترجاع:</strong> ${toArabicNum(deletedLessons.length)}</div>
+      ${deletedLessons.length ? `<button class="btn-small secondary" onclick="restoreFromTrash()">♻️ استرجاع المحذوفات</button>` : ''}
+    `;
+  }
+}
+
+/* Load from server */
+async function loadFromServer() {
+  if (location.protocol === 'file:') return 0;
+  const grades = ['grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6'];
+  let added = 0;
+  for (const gk of grades) {
+    try {
+      const res = await fetch(`data/${gk}_lessons.json`, { cache: 'no-cache' });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const arr = Array.isArray(data) ? data : [data];
+      arr.forEach(raw => {
+        try {
+          const m = migrateLesson(raw);
+          if (validateLesson(m)) return;
+          const exists = library.some(l => (raw.id && l.id === raw.id) || (!raw.id && l.lessonTitle === m.lessonTitle && l.grade === m.grade));
+          if (exists) return;
+          m.id = raw.id || 'server_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+          m.coverImage = m.coverImage || null;
+          library.push(m);
+          added++;
+        } catch(e) {}
+      });
+    } catch(e) {}
+  }
+  if (added > 0) saveLibrary();
+  return added;
+}
+async function refreshFromServer(evt) {
+  const btn = evt?.currentTarget;
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ جارٍ التحديث...'; }
+  showLoading('جارٍ التحميل من الموقع...');
+  try {
+    const n = await loadFromServer();
+    renderAll();
+    hideLoading();
+    if (n > 0) showToast(`✅ تم إضافة ${toArabicNum(n)} درس`, 'success');
+    else showToast('لا توجد دروس جديدة على الموقع', 'warning');
+  } catch(e) {
+    hideLoading();
+    showToast('تعذر التحميل: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<span>🔄</span><span>تحديث من الموقع</span>'; }
+  }
+}
+
+/* Validation */
+function validateLesson(l) {
+  const errs = [];
+  if (!l.lessonTitle || !String(l.lessonTitle).trim()) errs.push("عنوان مفقود");
+  if (!Array.isArray(l.passage) || !l.passage.length) errs.push("النص مفقود");
+  else if (l.passage.some(p => !p || !String(p).trim())) errs.push("فقرة فارغة");
+  if (!Array.isArray(l.sections) || !l.sections.length) { errs.push("قسم واحد على الأقل"); return errs.join("\n"); }
+  l.sections.forEach((sec, si) => {
+    if (!Array.isArray(sec.questions) || !sec.questions.length) errs.push(`قسم ${toArabicNum(si+1)}: لا أسئلة`);
+    sec.questions.forEach((q, qi) => {
+      if (!q.q || !String(q.q).trim()) errs.push(`قسم ${toArabicNum(si+1)} س${toArabicNum(qi+1)}: نص`);
+      if (!Array.isArray(q.options) || q.options.length !== 4) errs.push(`قسم ${toArabicNum(si+1)} س${toArabicNum(qi+1)}: ٤ خيارات`);
+      if (typeof q.answer !== "number" || q.answer < 0 || q.answer > 3) errs.push(`قسم ${toArabicNum(si+1)} س${toArabicNum(qi+1)}: إجابة`);
+    });
+  });
+  return errs.length ? errs.join("\n") : null;
+}
+
+/* Grade helpers */
+function getGradeTheme(g) { return GRADE_THEMES[g] || GRADE_THEMES.grade_3; }
+function getGradeName(l) { return getGradeTheme(l.grade || 'grade_3').name; }
+function getUnitLessonLabel(l) {
+  const u = (l.unitName || '').trim();
+  const ls = (l.lessonLabel || '').trim();
+  if (u && ls) return u + ' — ' + ls;
+  return u || ls || '';
+}
+function applyGradeTheme(el, lesson) {
+  if (!el || !lesson) return;
+  const grade = currentSettings.unifiedColors ? 'grade_3' : (lesson.grade || 'grade_3');
+  const t = getGradeTheme(grade);
+  el.style.setProperty('--primary', t.primary);
+  el.style.setProperty('--primary-dark', t.primaryDark);
+  el.style.setProperty('--primary-light', t.primaryLight);
+  el.style.setProperty('--secondary', t.secondary);
+  el.style.setProperty('--secondary-light', t.secondaryLight);
+}
+
+/* Sidebar */
+function renderSidebarGrades() {
+  const c = document.getElementById('sidebarGrades');
+  const keys = ['grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6'];
+  c.innerHTML = keys.map(gk => {
+    const t = GRADE_THEMES[gk];
+    const count = library.filter(l => (l.grade || 'grade_3') === gk).length;
+    const active = currentGrade === gk && document.getElementById('gradeView').classList.contains('active');
+    return `<button class="grade-nav-item${active ? ' active' : ''}" onclick="openGrade('${gk}')">
+      <span class="dot" style="background:${t.primary}; color:${t.primary};"></span>
+      <span class="name">${t.short}</span>
+      <span class="count">${toArabicNum(count)}</span>
+    </button>`;
+  }).join('');
+}
+function renderSidebarUser() {
+  const el = document.getElementById('sidebarUser');
+  if (!el) return;
+  const initial = (currentSettings.teacherName || 'أ').trim()[0] || 'أ';
+  el.innerHTML = `
+    <div class="user-avatar">${escapeHtml(initial)}</div>
+    <div class="user-info">
+      <div class="user-name">أ. ${escapeHtml(currentSettings.teacherName)}</div>
+      <div class="user-role">معلم لغة عربية</div>
+    </div>
+  `;
+}
+
+/* Views */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(name + 'View').classList.add('active');
+  document.getElementById('navHome').classList.toggle('active', name === 'dashboard');
+  renderSidebarGrades();
+  if (window.innerWidth <= 960) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+  window.scrollTo(0, 0);
+  if (name === 'dashboard') renderDashboard();
+}
+function renderAll() {
+  renderDashboard();
+  renderSidebarGrades();
+  renderSidebarUser();
+  renderStorage();
+  if (document.getElementById('gradeView').classList.contains('active')) renderGradeView(currentGrade);
+  if (document.getElementById('lessonView').classList.contains('active')) renderActiveLesson();
+}
+
+/* Dashboard */
+function renderDashboard() {
+  const totalLessons = library.length;
+  const totalQuestions = library.reduce((s, l) => s + l.sections.reduce((ss, sec) => ss + sec.questions.length, 0), 0);
+  const activeGrades = new Set(library.map(l => l.grade || 'grade_3')).size;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">📚</div><div><div class="stat-value">${toArabicNum(totalLessons)}</div><div class="stat-label">درس إجمالي</div></div></div>
+    <div class="stat-card"><div class="stat-icon">❓</div><div><div class="stat-value">${toArabicNum(totalQuestions)}</div><div class="stat-label">سؤال</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🎯</div><div><div class="stat-value">${toArabicNum(activeGrades)}/٦</div><div class="stat-label">صفوف نشطة</div></div></div>
+  `;
+}
+
+/* Grade View */
+function openGrade(gk) {
+  currentGrade = gk;
+  _gradeSearch = '';
+  showView('grade');
+  renderGradeView(gk);
+}
+function renderGradeView(gk) {
+  const theme = getGradeTheme(gk);
+  const lessons = library.filter(l => (l.grade || 'grade_3') === gk);
+  const header = document.getElementById('gradeHeader');
+  header.style.background = `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`;
+  header.innerHTML = `
+    <h2>${theme.name}</h2>
+    <div class="sub">${toArabicNum(lessons.length)} ${lessons.length === 1 ? 'درس' : 'دروس'} · ${toArabicNum(lessons.reduce((s, l) => s + l.sections.reduce((ss, sec) => ss + sec.questions.length, 0), 0))} سؤال</div>
+  `;
+  document.getElementById('gradeActionsBar').innerHTML = `
+    <button class="btn-new" onclick="createNewLessonForGrade('${gk}')">➕ درس جديد</button>
+    <button class="btn-upload-grade" onclick="openUploadForGrade('${gk}')">📤 رفع ملفات</button>
+    ${lessons.length ? `<button class="btn-print-grade" onclick="openGradePrint('${gk}')">🖨️ طباعة الكل</button>` : ''}
+    ${lessons.length ? `<button class="btn-export-grade" onclick="exportGrade('${gk}')">💾 تصدير الصف</button>` : ''}
+  `;
+  document.getElementById('gradeSearch').value = '';
+  renderGradeLessonsList();
+}
+function renderGradeLessonsList() {
+  const gk = currentGrade;
+  const theme = getGradeTheme(gk);
+  let lessons = library.filter(l => (l.grade || 'grade_3') === gk);
+  if (_gradeSearch) {
+    const q = _gradeSearch.toLowerCase();
+    lessons = lessons.filter(l => l.lessonTitle.toLowerCase().includes(q) || (l.unitName || '').toLowerCase().includes(q) || (l.lessonLabel || '').toLowerCase().includes(q));
+  }
+  const list = document.getElementById('gradeLessonsList');
+  if (!lessons.length) {
+    list.innerHTML = `<div class="empty-grade">
+      <div class="empty-grade-icon">📚</div>
+      <div class="empty-grade-text">${_gradeSearch ? 'لا توجد نتائج' : 'لا توجد دروس لهذا الصف'}</div>
+      ${_gradeSearch ? '' : `<button class="btn-upload-grade" onclick="openUploadForGrade('${gk}')" style="padding:12px 24px; font-size:13pt;">📤 ابدأ برفع ملف</button>
+      <div style="margin-top:12px;"><button class="btn-new" onclick="createNewLessonForGrade('${gk}')" style="padding:12px 24px; font-size:13pt;">➕ أو أنشئ درسًا</button></div>`}
+    </div>`;
+    return;
+  }
+  list.innerHTML = lessons.map((l, i) => {
+    const qCount = l.sections.reduce((s, sec) => s + sec.questions.length, 0);
+    const unitLabel = getUnitLessonLabel(l);
+    return `<div class="lesson-card">
+      <div class="lesson-card-num" style="background: linear-gradient(135deg, ${theme.primary}, ${theme.secondary});">${toArabicNum(i + 1)}</div>
+      <div class="lesson-card-info">
+        <div class="lesson-card-title">${escapeHtml(l.lessonTitle)}</div>
+        <div class="lesson-card-meta">
+          ${unitLabel ? `<span>📖 ${escapeHtml(unitLabel)}</span>` : ''}
+          <span>❓ ${toArabicNum(qCount)} سؤال</span>
+          <span>📄 ${toArabicNum(l.passage.length)} فقرة</span>
+        </div>
+      </div>
+      <div class="lesson-card-actions">
+        <button onclick="loadLesson('${l.id}')">👁️ عرض</button>
+        <button onclick="editLesson('${l.id}')">✏️ تعديل</button>
+        <button class="img" onclick="quickSaveImages('${l.id}')">📸 صور</button>
+        <button onclick="duplicateLesson('${l.id}')">📋 نسخ</button>
+        <button class="del" onclick="deleteLesson('${l.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterLessons(q) { _gradeSearch = q.trim(); renderGradeLessonsList(); }
+function createNewLessonForGrade(gk) {
+  const copy = JSON.parse(JSON.stringify(library.find(l => (l.grade || 'grade_3') === gk) || DEFAULT_LESSON));
+  copy.id = genId('lesson');
+  copy.grade = gk;
+  copy.lessonTitle = "درس جديد";
+  copy.coverImage = null;
+  copy.unitName = "";
+  copy.lessonLabel = "";
+  copy.showStamp = true;
+  copy.sections = copy.sections.map(sec => ({ ...sec, id: genId('sec') }));
+  library.push(copy);
+  activeId = copy.id;
+  saveLibrary();
+  renderAll();
+  setTimeout(openEditor, 150);
+}
+function duplicateLesson(id) {
+  const o = library.find(l => l.id === id);
+  if (!o) return;
+  const c = JSON.parse(JSON.stringify(o));
+  c.id = genId('lesson');
+  c.lessonTitle = o.lessonTitle + " (نسخة)";
+  c.sections = c.sections.map(s => ({ ...s, id: genId('sec') }));
+  library.push(c);
+  saveLibrary();
+  renderAll();
+  showToast('✅ تم نسخ الدرس', 'success');
+}
+function deleteLesson(id) {
+  if (library.length === 1) { showToast('لا يمكن حذف الدرس الأخير', 'warning'); return; }
+  const lesson = library.find(l => l.id === id);
+  if (!lesson) return;
+  if (!confirm(`حذف "${lesson.lessonTitle}"؟\n(يمكن التراجع خلال 7 أيام)`)) return;
+  deletedLessons.push({ lesson, timestamp: Date.now() });
+  library = library.filter(l => l.id !== id);
+  if (activeId === id) activeId = library[0].id;
+  saveLibrary();
+  renderAll();
+  showToast(`🗑️ تم حذف الدرس <button class="toast-action" onclick="undoDelete()">تراجع</button>`, 'warning', 7000);
+}
+function undoDelete() {
+  if (!deletedLessons.length) return;
+  const last = deletedLessons.pop();
+  library.push(last.lesson);
+  saveLibrary();
+  renderAll();
+  showToast('♻️ تم استرجاع الدرس', 'success');
+}
+function restoreFromTrash() {
+  if (!deletedLessons.length) { showToast('لا توجد محذوفات', 'warning'); return; }
+  if (!confirm(`استرجاع ${deletedLessons.length} درس؟`)) return;
+  deletedLessons.forEach(d => library.push(d.lesson));
+  deletedLessons = [];
+  saveLibrary();
+  renderAll();
+  showToast('♻️ تم استرجاع الكل', 'success');
+}
+
+/* Lesson View */
+function loadLesson(id) {
+  const l = library.find(x => x.id === id);
+  if (!l) return;
+  activeId = id;
+  currentPreviewMode = 'student';
+  saveLibrary();
+  document.getElementById('lessonTitleBar').textContent = l.lessonTitle;
+  renderActiveLesson();
+  showView('lesson');
+}
+function editLesson(id) { activeId = id; saveLibrary(); openEditor(); }
+function backToGrade() { showView('grade'); renderGradeView(currentGrade); }
+
+/* Upload */
+function openUpload() { closeAllPanels(); document.getElementById('uploadModal').classList.add('show'); }
+function closeUpload() { document.getElementById('uploadModal').classList.remove('show'); }
+function openUploadForGrade(gk) {
+  closeAllPanels();
+  const fi = document.getElementById('modalFileInput');
+  fi.onchange = (e) => handleFiles(e.target.files, gk);
+  fi.value = '';
+  fi.click();
+}
+async function handleFiles(files, forceGrade) {
+  if (!files || !files.length) return;
+  showLoading('جارٍ رفع الملفات...');
+  let added = 0, skipped = 0;
+  const errors = [];
+  const start = Date.now();
+  let idx = 0;
+  for (const file of Array.from(files)) {
+    updateLoading(`معالجة: ${file.name}`);
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const lessons = Array.isArray(parsed) ? parsed : [parsed];
+      for (const raw of lessons) {
+        try {
+          const m = migrateLesson(raw);
+          if (forceGrade) m.grade = forceGrade;
+          const err = validateLesson(m);
+          if (err) { errors.push(`${file.name}: ${err.split('\n')[0]}`); continue; }
+          const exists = library.some(l => (raw.id && l.id === raw.id) || (!raw.id && l.lessonTitle === m.lessonTitle && l.grade === m.grade));
+          if (exists) { skipped++; continue; }
+          m.id = raw.id || genId('lesson');
+          m.coverImage = m.coverImage || null;
+          library.push(m);
+          added++;
+        } catch(e) { errors.push(`${file.name}: ${e.message}`); }
+      }
+    } catch(e) { errors.push(`${file.name}: ${e.message}`); }
+  }
+  hideLoading();
+  if (added > 0 || skipped > 0) {
+    activeId = library[library.length - 1].id;
+    saveLibrary();
+    closeUpload();
+    renderAll();
+    let msg = `✅ أضيف ${toArabicNum(added)} درس`;
+    if (skipped > 0) msg += ` · تخطي ${toArabicNum(skipped)} مكرر`;
+    showToast(msg, 'success');
+    if (errors.length) showToast(`⚠️ فشل ${toArabicNum(errors.length)} ملف`, 'error', 6000);
+  } else {
+    showToast('❌ لم يُضف أي درس · ' + errors[0], 'error', 6000);
+  }
+}
+
+/* Export */
+function exportGrade(gk) {
+  const lessons = library.filter(l => (l.grade || 'grade_3') === gk);
+  if (!lessons.length) { showToast('لا توجد دروس', 'warning'); return; }
+  const jsonStr = JSON.stringify(lessons, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = gk + '_lessons.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`✅ تم تصدير ${toArabicNum(lessons.length)} دروس · ضع الملف في مجلد data/`, 'success', 6000);
+}
+
+/* Save as ZIP */
+async function saveAsImages(evt) {
+  const btn = evt?.currentTarget;
+  if (typeof html2canvas === 'undefined' || typeof JSZip === 'undefined') {
+    showToast('❌ مكتبات الصور لم تُحمَّل · تحقق من الإنترنت', 'error');
+    return;
+  }
+  const pages = document.querySelectorAll('#pagesContainer .page');
+  if (!pages.length) { showToast('لا توجد صفحات', 'warning'); return; }
+  const lesson = library.find(l => l.id === activeId);
+  const safeTitle = (lesson?.lessonTitle || 'lesson').replace(/[\\\/:*?"<>|]/g, '_').slice(0, 40);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ تحويل...'; }
+  showLoading('جارٍ تحويل الصفحات إلى صور...');
+  try {
+    await document.fonts.ready;
+    const zip = new JSZip();
+    const folder = zip.folder(safeTitle);
+    for (let i = 0; i < pages.length; i++) {
+      updateLoading(`تحويل ${toArabicNum(i + 1)} من ${toArabicNum(pages.length)}...`);
+      const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: pages[i].scrollWidth, windowHeight: pages[i].scrollHeight });
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      folder.file(`صفحة_${String(i + 1).padStart(2, '0')}.png`, blob);
+    }
+    updateLoading('جارٍ ضغط الملف...');
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = safeTitle + '.zip';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    hideLoading();
+    showToast(`✅ تم حفظ ${toArabicNum(pages.length)} صفحات في ZIP`, 'success');
+  } catch(e) {
+    hideLoading();
+    showToast('فشل: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '📸 حفظ كصور'; }
+  }
+}
+async function quickSaveImages(id) {
+  loadLesson(id);
+  await new Promise(r => setTimeout(r, 800));
+  await saveAsImages(null);
+}
+
+/* Toggles */
+function toggleAnswers() {
+  currentAnswersVisible = !currentAnswersVisible;
+  document.body.classList.toggle("show-answers", currentAnswersVisible);
+  const b = document.getElementById("tbToggle");
+  b.textContent = currentAnswersVisible ? "👁️ إخفاء" : "👁️ الحل";
+  b.classList.toggle("active", currentAnswersVisible);
+}
+function togglePreview() {
+  document.body.classList.toggle('preview-mode');
+  const isOn = document.body.classList.contains('preview-mode');
+  document.getElementById('tbPreview').classList.toggle('active', isOn);
+  if (isOn) updatePreviewInfo();
+}
+function updatePreviewInfo() {
+  const pages = document.querySelectorAll('#pagesContainer .page');
+  document.getElementById('previewInfo').innerHTML = `🔍 معاينة · A4 · ${toArabicNum(pages.length)} صفحة`;
+}
+function closePrintDialog() { document.getElementById('printDialog').classList.remove('show'); }
+function closeGradePrintDialog() { document.getElementById('gradePrintDialog').classList.remove('show'); }
+function printActive(mode) {
+  closePrintDialog();
+  const l = library.find(x => x.id === activeId);
+  if (!l) return;
+  renderPages(buildPagesForLesson(l, mode));
+  setTimeout(() => window.print(), 250);
+}
+function openGradePrint(gk) {
+  const lessons = library.filter(l => (l.grade || 'grade_3') === gk);
+  if (!lessons.length) { showToast('لا توجد دروس', 'warning'); return; }
+  document.getElementById('gradePrintCount').textContent = toArabicNum(lessons.length);
+  document.getElementById('gradePrintDialog').classList.add('show');
+}
+function executeGradePrint(mode) {
+  closeGradePrintDialog();
+  const lessons = library.filter(l => (l.grade || 'grade_3') === currentGrade);
+  renderPages(buildPagesForMulti(lessons, mode));
+  showView('lesson');
+  document.getElementById('lessonTitleBar').textContent = `طباعة ${toArabicNum(lessons.length)} دروس — ${getGradeTheme(currentGrade).name}`;
+  setTimeout(() => window.print(), 300);
+}
+
+/* Page building */
+function createTestPage(cls, mode) {
+  const t = document.createElement('div');
+  t.className = 'page ' + cls;
+  if (mode) t.dataset.mode = mode;
+  t.style.cssText = 'position:fixed; top:-99999px; left:0; visibility:hidden; pointer-events:none; width:210mm; height:297mm; overflow:hidden;';
+  return t;
+}
+function testOverflow(t) { return t.scrollHeight > t.clientHeight + 2; }
+function footerHtml() {
+  return `<div class="page-footer">
+    <span class="teacher-name">إعداد الأستاذ ${escapeHtml(currentSettings.teacherName)}</span>
+    <span class="page-number empty"></span>
+    <span class="tiktok-brand">
+      <svg class="tiktok-icon" viewBox="0 0 24 24"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+      <span class="tiktok-handle"><span class="tiktok-at">@</span>osam.ibraheem</span>
+    </span>
+  </div>`;
+}
+function renderQuestionBlock(q, num) {
+  let html = '<div class="q-block">';
+  html += `<div class="q-text"><span class="q-number">${toArabicNum(num)}</span>${escapeHtml(q.q)}</div>`;
+  html += '<div class="q-options">';
+  q.options.forEach((opt, i) => {
+    const c = i === q.answer;
+    html += `<div class="q-option${c ? ' correct' : ''}"><span class="box"></span><span><span class="opt-letter">${ARABIC_LETTERS[i]})</span> ${escapeHtml(opt)}</span></div>`;
+  });
+  html += '</div></div>';
+  return html;
+}
+function paginatePassage(paras) {
+  if (!paras.length) return [[]];
+  const t = createTestPage('page-passage');
+  const p = document.createElement('div'); p.className = 'passage'; t.appendChild(p);
+  const fw = document.createElement('div'); fw.innerHTML = footerHtml(); t.appendChild(fw.firstElementChild);
+  document.body.appendChild(t);
+  const pages = []; let cur = [];
+  for (const para of paras) {
+    const el = document.createElement('p'); el.textContent = para; p.appendChild(el);
+    void t.offsetHeight;
+    if (testOverflow(t) && cur.length > 0) {
+      p.lastElementChild.remove();
+      pages.push(cur); cur = [];
+      p.innerHTML = '';
+      const np = document.createElement('p'); np.textContent = para; p.appendChild(np);
+      void t.offsetHeight;
+      cur.push(para);
+    } else cur.push(para);
+  }
+  if (cur.length) pages.push(cur);
+  document.body.removeChild(t);
+  return pages.length ? pages : [[]];
+}
+function paginateQuestions(sections, mode) {
+  const items = []; let n = 1;
+  sections.forEach(s => s.questions.forEach(q => { items.push({ html: renderQuestionBlock(q, n++) }); }));
+  if (!items.length) return [[]];
+  const t = createTestPage('page-questions', mode);
+  const f = document.createElement('div'); f.className = 'questions-flow'; t.appendChild(f);
+  const fw = document.createElement('div'); fw.innerHTML = footerHtml(); t.appendChild(fw.firstElementChild);
+  document.body.appendChild(t);
+  const pages = []; let cur = [];
+  for (const it of items) {
+    f.insertAdjacentHTML('beforeend', it.html);
+    void t.offsetHeight;
+    if (testOverflow(t) && cur.length > 0) {
+      f.lastElementChild.remove();
+      pages.push(cur); cur = [];
+      f.innerHTML = '';
+      f.insertAdjacentHTML('beforeend', it.html);
+      void t.offsetHeight;
+      cur.push(it);
+    } else cur.push(it);
+  }
+  if (cur.length) pages.push(cur);
+  document.body.removeChild(t);
+  return pages.length ? pages : [[]];
+}
+function paginateBubble(lesson, mode) {
+  const allRows = []; let n = 1;
+  lesson.sections.forEach(s => s.questions.forEach(q => allRows.push({ num: n++, answer: q.answer })));
+  if (!allRows.length) return [[]];
+  const pages = []; let rem = allRows.slice();
+  while (rem.length > 0) {
+    let lo = 1, hi = rem.length, best = 1;
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2);
+      const t = createTestPage('page-bubble', mode);
+      t.innerHTML = renderBubble({ lesson, items: rem.slice(0, mid), partNum: 1, totalParts: 1, mode });
+      document.body.appendChild(t);
+      const fits = !testOverflow(t);
+      document.body.removeChild(t);
+      if (fits) { best = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    pages.push(rem.slice(0, best));
+    rem = rem.slice(best);
+  }
+  return pages;
+}
+function buildQOnly(lesson) {
+  const pgs = [];
+  paginatePassage(lesson.passage).forEach((p, i, arr) => pgs.push({ type: 'passage', lesson, paragraphs: p, partNum: i + 1, totalParts: arr.length, mode: 'student' }));
+  paginateQuestions(lesson.sections, 'student').forEach(items => pgs.push({ type: 'questions', lesson, items, mode: 'student' }));
+  return pgs;
+}
+function buildStudent(lesson) {
+  const pgs = buildQOnly(lesson);
+  if (lesson.includeBubbleSheet) {
+    paginateBubble(lesson, 'student').forEach((items, i, arr) => pgs.push({ type: 'bubble', lesson, items, partNum: i + 1, totalParts: arr.length, mode: 'student' }));
+  }
+  return pgs;
+}
+function buildAnswer(lesson) {
+  const pgs = [];
+  const disp = lesson.answerDisplay || 'bubble';
+  if (disp === 'bubble') {
+    if (lesson.includeBubbleSheet) {
+      paginateBubble(lesson, 'answer').forEach((items, i, arr) => pgs.push({ type: 'bubble', lesson, items, partNum: i + 1, totalParts: arr.length, mode: 'answer' }));
+    }
+  } else if (lesson.includeAnswerKey) {
+    pgs.push({ type: 'answerkey', lesson });
+  }
+  return pgs;
+}
+function buildPagesForLesson(lesson, mode) {
+  const pgs = [{ type: 'cover', lesson }];
+  const pm = mode === 'answers' ? 'answer' : 'student';
+  paginatePassage(lesson.passage).forEach((p, i, arr) => pgs.push({ type: 'passage', lesson, paragraphs: p, partNum: i + 1, totalParts: arr.length, mode: pm }));
+  paginateQuestions(lesson.sections, pm).forEach(items => pgs.push({ type: 'questions', lesson, items, mode: pm }));
+  if (mode === 'answers') pgs.push(...buildAnswer(lesson));
+  else if (lesson.includeBubbleSheet) {
+    paginateBubble(lesson, 'student').forEach((items, i, arr) => pgs.push({ type: 'bubble', lesson, items, partNum: i + 1, totalParts: arr.length, mode: 'student' }));
+  }
+  return pgs;
+}
+function buildPagesForMulti(lessons, mode) {
+  const pgs = [{ type: 'unified-cover', lessons }];
+  if (mode === 'q_only') lessons.forEach(l => pgs.push(...buildQOnly(l)));
+  else if (mode === 'student') lessons.forEach(l => pgs.push(...buildStudent(l)));
+  else if (mode === 'interleaved') lessons.forEach(l => { pgs.push(...buildStudent(l)); pgs.push(...buildAnswer(l)); });
+  else if (mode === 'grouped') {
+    lessons.forEach(l => pgs.push(...buildStudent(l)));
+    lessons.forEach(l => pgs.push(...buildAnswer(l)));
+  }
+  return pgs;
+}
+function createPageElement(pd) {
+  const d = document.createElement('div');
+  d.className = 'page';
+  if (pd.mode) d.dataset.mode = pd.mode;
+  if (pd.type === 'unified-cover') applyGradeTheme(d, { grade: 'grade_3' });
+  else if (pd.lesson) applyGradeTheme(d, pd.lesson);
+  if (pd.type === 'cover') { d.classList.add('page-cover'); d.innerHTML = renderCover(pd.lesson); }
+  else if (pd.type === 'unified-cover') { d.classList.add('page-cover', 'page-unified-cover'); d.innerHTML = renderUnifiedCover(pd.lessons); }
+  else if (pd.type === 'passage') { d.classList.add('page-passage'); d.innerHTML = renderPassage(pd); }
+  else if (pd.type === 'questions') { d.classList.add('page-questions'); d.innerHTML = renderQuestions(pd); }
+  else if (pd.type === 'bubble') { d.classList.add('page-bubble'); d.innerHTML = renderBubble(pd); }
+  else if (pd.type === 'answerkey') { d.classList.add('page-answerkey'); d.innerHTML = renderAnswerKey(pd); }
+  return d;
+}
+
+/* Render — with stamp visibility control */
+function renderStamp() {
+  return `<div class="cover-stamp">
+    <div class="cover-stamp-inner">
+      <div class="cover-stamp-text">أُجِيزَ لِلْاِسْتِخْدَامِ التَّعْلِيمِيِّ</div>
+      <div class="cover-stamp-divider"></div>
+      <div class="cover-stamp-signature">أ. ${escapeHtml(currentSettings.teacherName)}</div>
+    </div>
+  </div>`;
+}
+function shouldShowStamp(lesson) {
+  if (!currentSettings.showStamp) return false;
+  if (lesson && lesson.showStamp === false) return false;
+  return true;
+}
+function renderCover(lesson) {
+  const img = lesson.coverImage ? `<div class="cover-image-wrap"><img class="cover-image" src="${lesson.coverImage}" alt="" onerror="this.style.display='none'"></div>` : '';
+  const unitLabel = getUnitLessonLabel(lesson);
+  const unitHtml = unitLabel ? `<div class="cover-unit-lesson">${escapeHtml(unitLabel)}</div>` : '';
+  const stampHtml = shouldShowStamp(lesson) ? renderStamp() : '';
+  return `<div class="cover-frame">
+    <div class="cover-corner tl"></div><div class="cover-corner tr"></div>
+    <div class="cover-corner bl"></div><div class="cover-corner br"></div>
+    ${stampHtml}
+    <div class="cover-header">
+      <div class="cover-country">المملكة العربية السعودية</div>
+      <div class="cover-ministry">وزارة التعليم</div>
+    </div>
+    <div class="cover-main-block">
+      <h1 class="cover-main-title">فَهْمُ الْمَقْرُوءِ</h1>
+      <div class="cover-divider-ornament"><span class="ornament-line"></span><span class="ornament-icon">✦</span><span class="ornament-line"></span></div>
+    </div>
+    <div class="cover-lesson-block">
+      ${unitHtml}
+      <h2 class="cover-lesson-title">${escapeHtml(lesson.lessonTitle)}</h2>
+      ${img}
+    </div>
+    <div class="cover-grade-block">
+      <span class="cover-grade-pill">${escapeHtml(getGradeName(lesson))}</span>
+      <span class="cover-term-pill">الفصل الدراسي الأول — ١٤٤٨ هـ</span>
+    </div>
+    <div class="cover-info-block">
+      <div class="cover-field"><label>اسم الطالب:</label><div class="line"></div></div>
+      <div class="cover-field"><label>الصف:</label><div class="line"></div></div>
+      <div class="cover-field"><label>الفصل:</label><div class="line"></div></div>
+    </div>
+  </div>${footerHtml()}`;
+}
+function renderUnifiedCover(lessons) {
+  const c = lessons.length;
+  const items = lessons.map((l, i) => {
+    const ul = getUnitLessonLabel(l);
+    return `<li><span class="unified-lesson-index">${toArabicNum(i + 1)}</span><div><div class="unified-lesson-meta">${escapeHtml(ul)}</div><div class="unified-lesson-title">${escapeHtml(l.lessonTitle)}</div></div></li>`;
+  }).join('');
+  const stampHtml = currentSettings.showStamp ? renderStamp() : '';
+  return `<div class="cover-frame">
+    <div class="cover-corner tl"></div><div class="cover-corner tr"></div>
+    <div class="cover-corner bl"></div><div class="cover-corner br"></div>
+    ${stampHtml}
+    <div class="cover-header">
+      <div class="cover-country">المملكة العربية السعودية</div>
+      <div class="cover-ministry">وزارة التعليم</div>
+    </div>
+    <div class="cover-main-block">
+      <h1 class="cover-main-title">فَهْمُ الْمَقْرُوءِ</h1>
+      <div class="cover-divider-ornament"><span class="ornament-line"></span><span class="ornament-icon">✦</span><span class="ornament-line"></span></div>
+    </div>
+    <div class="unified-lesson-list-block">
+      <div class="unified-lesson-list-title">قَائِمَةُ الدُّرُوسِ (${toArabicNum(c)} ${c === 1 ? 'درس' : 'دروس'})</div>
+      <ol class="unified-lesson-list">${items}</ol>
+    </div>
+  </div>${footerHtml()}`;
+}
+function renderPassage(pd) {
+  const { lesson, paragraphs, partNum, totalParts } = pd;
+  const ul = getUnitLessonLabel(lesson);
+  const meta = ul ? `<div class="passage-meta">${escapeHtml(ul)}</div>` : '';
+  const ind = totalParts > 1 ? `<div class="passage-page-indicator">الجزء ${toArabicNum(partNum)} من ${toArabicNum(totalParts)}</div>` : '';
+  return `${meta}${ind}<div class="passage">${paragraphs.map(p => '<p>' + escapeHtml(p) + '</p>').join('')}</div>${footerHtml()}`;
+}
+function renderQuestions(pd) {
+  let content = '';
+  pd.items.forEach(i => { content += i.html; });
+  return `<div class="questions-flow">${content}</div>${footerHtml()}`;
+}
+function renderBubble(pd) {
+  const { lesson, items, partNum, totalParts, mode } = pd;
+  const suf = totalParts > 1 ? ` (${toArabicNum(partNum)}/${toArabicNum(totalParts)})` : '';
+  const half = Math.ceil(items.length / 2);
+  const L = items.slice(0, half);
+  const R = items.slice(half);
+  const isAns = mode === 'answer';
+  const title = isAns ? 'نَمُوذَجُ الإِجَابَةِ' : 'وَرَقَةُ الإِجَابَةِ';
+  const gradeName = getGradeName(lesson);
+  function col(rows) {
+    return rows.map(row => {
+      let bubbles = '';
+      for (let i = 0; i < 4; i++) {
+        const c = i === row.answer;
+        bubbles += `<span class="bubble${c ? ' correct' : ''}"><svg class="bubble-bg" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/></svg><span class="bubble-letter">${ARABIC_LETTERS[i]}</span></span>`;
+      }
+      return `<div class="omr-row"><span class="omr-num">${toArabicNum(row.num)}</span>${bubbles}</div>`;
+    }).join('');
+  }
+  const hdr = `<div class="omr-col-header"><span class="omr-col-num-head">#</span><span>أ</span><span>ب</span><span>ج</span><span>د</span></div>`;
+  const uid = 'clip_' + (++_svgCounter);
+  return `<div class="omr-header">
+    <div class="omr-header-main">
+      <div class="omr-header-icon">✏️</div>
+      <div class="omr-header-text">
+        <div class="omr-title">${title}${suf}</div>
+        <div class="omr-subtitle">${escapeHtml(lesson.lessonTitle)}</div>
+      </div>
+    </div>
+    <div class="omr-header-side">
+      <div class="omr-lesson-label">الصَّفُّ</div>
+      <div class="omr-lesson-name">${escapeHtml(gradeName)}</div>
+    </div>
+  </div>
+  <div class="omr-student-info">
+    <div class="omr-field"><label>الطالب:</label><div class="fill-line"></div></div>
+    <div class="omr-field"><label>الصف:</label><div class="fill-line"></div></div>
+    <div class="omr-field"><label>التاريخ:</label><div class="fill-line"></div></div>
+  </div>
+  <div class="omr-instructions">
+    <div class="omr-instructions-title">📌 تعليمات التظليل</div>
+    <ul class="omr-instructions-list">
+      <li>ظلّل دائرة واحدة فقط في كل سؤال، بقلم رصاص.</li>
+      <li>لا تظلل خارج حدود الدائرة، وامسح الخطأ جيدًا قبل البديل.</li>
+    </ul>
+    <div class="omr-examples">
+      <div class="omr-example omr-example-correct">
+        <div class="omr-example-header"><span class="omr-example-badge">✓</span><span>التظليل الصحيح</span></div>
+        <div class="demo-bubbles-row">
+          <span class="demo-bubble"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/></svg><span class="demo-letter">أ</span></span>
+          <span class="demo-bubble demo-correct"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/></svg><span class="demo-letter">ب</span></span>
+          <span class="demo-bubble"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/></svg><span class="demo-letter">ج</span></span>
+          <span class="demo-bubble"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/></svg><span class="demo-letter">د</span></span>
+        </div>
+        <div class="omr-example-note">دائرة واحدة مكتملة</div>
+      </div>
+      <div class="omr-example omr-example-wrong">
+        <div class="omr-example-header"><span class="omr-example-badge">✗</span><span>التظليل الخطأ</span></div>
+        <div class="demo-bubbles-row">
+          <div class="demo-wrong-item">
+            <div class="demo-bubble">
+              <svg viewBox="0 0 20 20">
+                <defs><clipPath id="${uid}"><rect x="0" y="10" width="20" height="10"/></clipPath></defs>
+                <circle cx="10" cy="10" r="8.5" style="fill:#fff; stroke:#dc2626; stroke-width:1.8;"/>
+                <circle cx="10" cy="10" r="8.5" clip-path="url(#${uid})" style="fill:#dc2626; stroke:#dc2626; stroke-width:1.8;"/>
+              </svg>
+              <span class="demo-letter" style="color:#b91c1c;">أ</span>
+            </div>
+            <div class="demo-wrong-caption">نصف مظلل</div>
+          </div>
+          <div class="demo-wrong-item">
+            <div class="demo-bubble">
+              <svg viewBox="-4 -4 28 28">
+                <circle cx="10" cy="10" r="8.5" style="fill:#fff; stroke:#dc2626; stroke-width:1.8;"/>
+                <circle cx="13" cy="12" r="8" style="fill:#dc2626; stroke:#dc2626; opacity:0.55;"/>
+              </svg>
+              <span class="demo-letter" style="color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.6);">ج</span>
+            </div>
+            <div class="demo-wrong-caption">خارج الحدود</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="omr-columns">
+    <div class="omr-column">${hdr}${col(L)}</div>
+    <div class="omr-column">${hdr}${col(R)}</div>
+  </div>
+  ${footerHtml()}`;
+}
+function renderAnswerKey(pd) {
+  const { lesson } = pd;
+  const ul = getUnitLessonLabel(lesson);
+  const gn = getGradeName(lesson);
+  const allQ = [];
+  lesson.sections.forEach(s => s.questions.forEach(q => allQ.push({ answer: q.answer })));
+  const half = Math.ceil(allQ.length / 2);
+  let tbl = '<table class="answer-key-table"><thead><tr><th>#</th><th>الإجابة</th><th>#</th><th>الإجابة</th></tr></thead><tbody>';
+  for (let i = 0; i < half; i++) {
+    const l = allQ[i], r = allQ[i + half];
+    tbl += `<tr><td class="num">${toArabicNum(i + 1)}</td><td class="ans">${ARABIC_LETTERS[l.answer]}</td>`;
+    if (r) tbl += `<td class="num">${toArabicNum(i + half + 1)}</td><td class="ans">${ARABIC_LETTERS[r.answer]}</td>`;
+    else tbl += '<td></td><td></td>';
+    tbl += '</tr>';
+  }
+  tbl += '</tbody></table>';
+  return `<div class="answer-key-header">
+    <span style="font-size:15pt;">✅</span>
+    <div class="ak-titles">
+      <div class="ak-main">مِفْتَاحُ الْإِجَابَةِ</div>
+      ${ul ? `<div class="ak-unit">${escapeHtml(ul)} · ${escapeHtml(gn)}</div>` : `<div class="ak-unit">${escapeHtml(gn)}</div>`}
+      <div class="ak-lesson">${escapeHtml(lesson.lessonTitle)}</div>
+    </div>
+  </div>${tbl}<div class="answer-key-note">للمصحح — نموذج سريع للتصحيح</div>${footerHtml()}`;
+}
+function renderPages(list) {
+  const c = document.getElementById('pagesContainer');
+  c.innerHTML = '';
+  list.forEach(pd => c.appendChild(createPageElement(pd)));
+  renumber();
+  if (document.body.classList.contains('preview-mode')) setTimeout(updatePreviewInfo, 10);
+}
+function renumber() {
+  let n = 1;
+  document.querySelectorAll('#pagesContainer .page').forEach(p => {
+    const el = p.querySelector('.page-number');
+    if (!el) return;
+    if (p.classList.contains('page-cover')) { el.textContent = ''; el.classList.add('empty'); }
+    else { el.textContent = toArabicNum(n++); el.classList.remove('empty'); }
+  });
+}
+function renderActiveLesson() {
+  const l = library.find(x => x.id === activeId);
+  if (!l) return;
+  renderPages(buildPagesForLesson(l, currentPreviewMode === 'answers' ? 'answers' : 'student'));
+}
+
+/* Editor */
+function openEditor() {
+  closeAllPanels();
+  if (!activeId) { showToast('اختر درسًا أولًا', 'warning'); return; }
+  draftData = JSON.parse(JSON.stringify(library.find(l => l.id === activeId)));
+  uploadedImages = [];
+  if (draftData.coverImage && draftData.coverImage.startsWith('data:')) {
+    uploadedImages.push({ dataUrl: draftData.coverImage, name: 'الصورة الحالية' });
+  }
+  renderForm();
+  document.getElementById('editorPanel').classList.add('show');
+}
+function closeEditor() { document.getElementById('editorPanel').classList.remove('show'); draftData = null; uploadedImages = []; }
+function renderForm() {
+  document.getElementById('f_grade').value = draftData.grade || 'grade_3';
+  document.getElementById('f_unit').value = draftData.unitName || '';
+  document.getElementById('f_lesson_label').value = draftData.lessonLabel || '';
+  document.getElementById('f_title').value = draftData.lessonTitle;
+  document.getElementById('toggleBubbleSheet').checked = draftData.includeBubbleSheet !== false;
+  document.getElementById('toggleStamp').checked = draftData.showStamp !== false;
+  document.getElementById('sel_answerDisplay').value = draftData.answerDisplay || 'bubble';
+  document.getElementById('imgPathInput').value = (draftData.coverImage && !draftData.coverImage.startsWith('data:')) ? draftData.coverImage : '';
+  updateGradePreviewColor();
+  renderPassages();
+  renderSections();
+  renderImageGallery();
+  if (draftData.coverImage) showImagePreview(draftData.coverImage);
+  else hideImagePreview();
+}
+function updateGradePreviewColor() {
+  const g = document.getElementById('f_grade').value;
+  const t = getGradeTheme(g);
+  document.getElementById('gradeColorPreview').style.background = `linear-gradient(135deg, ${t.primary}, ${t.secondary})`;
+}
+function onGradeChange() {
+  updateGradePreviewColor();
+  if (draftData) draftData.grade = document.getElementById('f_grade').value;
+}
+function renderPassages() {
+  document.getElementById('passagesContainer').innerHTML = draftData.passage.map((p, i) => `
+    <div class="qf-passage">
+      <div class="qf-passage-header">
+        <span class="qf-num">${toArabicNum(i + 1)}</span>
+        ${draftData.passage.length > 1 ? `<button class="qf-del" onclick="removePassage(${i})">×</button>` : ''}
+      </div>
+      <textarea class="qf-passage-text" rows="3">${escapeHtml(p)}</textarea>
+    </div>
+  `).join('');
+}
+function renderSections() {
+  document.getElementById('sectionsContainer').innerHTML = draftData.sections.map((sec, si) => {
+    const qs = sec.questions.map((q, qi) => `
+      <div class="qf-card">
+        <div class="qf-header">
+          <span class="qf-num">${toArabicNum(qi + 1)}</span>
+          <input class="qf-q" value="${escapeAttr(q.q)}" placeholder="نص السؤال">
+          <button class="qf-del" onclick="removeQuestion(${si}, ${qi})">×</button>
+        </div>
+        <div class="qf-opts">
+          ${q.options.map((opt, oi) => `
+            <div class="qf-opt-row">
+              <label class="qf-radio">
+                <input type="radio" name="sec_${si}_q_${qi}" value="${oi}" ${q.answer === oi ? 'checked' : ''}>
+                ${ARABIC_LETTERS[oi]}
+              </label>
+              <input class="qf-opt" value="${escapeAttr(opt)}" placeholder="الخيار ${ARABIC_LETTERS[oi]}">
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+    return `<div class="section-editor">
+      <div class="section-editor-head">
+        <span class="qf-num">${toArabicNum(si + 1)}</span>
+        <input class="section-title-input" value="${escapeAttr(sec.title)}" placeholder="عنوان القسم">
+        ${draftData.sections.length > 1 ? `<button class="qf-del" onclick="removeSection(${si})">🗑️</button>` : ''}
+      </div>
+      <div class="qf-list">${qs}</div>
+      <button class="btn-add" onclick="addQuestion(${si})">+ سؤال</button>
+    </div>`;
+  }).join('');
+}
+function syncDraft() {
+  draftData.grade = document.getElementById('f_grade').value;
+  draftData.unitName = document.getElementById('f_unit').value.trim();
+  draftData.lessonLabel = document.getElementById('f_lesson_label').value.trim();
+  draftData.lessonTitle = document.getElementById('f_title').value.trim();
+  draftData.includeBubbleSheet = document.getElementById('toggleBubbleSheet').checked;
+  draftData.showStamp = document.getElementById('toggleStamp').checked;
+  draftData.answerDisplay = document.getElementById('sel_answerDisplay').value;
+  draftData.passage = Array.from(document.querySelectorAll('.qf-passage-text')).map(t => t.value.trim());
+  const sds = document.querySelectorAll('.section-editor');
+  draftData.sections = draftData.sections.map((sec, si) => {
+    const d = sds[si];
+    if (!d) return sec;
+    const title = d.querySelector('.section-title-input').value.trim();
+    const qs = Array.from(d.querySelectorAll('.qf-card')).map(card => {
+      const q = card.querySelector('.qf-q').value.trim();
+      const opts = Array.from(card.querySelectorAll('.qf-opt')).map(el => el.value.trim());
+      const c = card.querySelector('input[type=radio]:checked');
+      const a = c ? parseInt(c.value, 10) : -1;
+      return { q, options: opts, answer: a };
+    });
+    return { ...sec, title, questions: qs };
+  });
+}
+function addPassage() { syncDraft(); draftData.passage.push(''); renderPassages(); }
+function removePassage(i) { syncDraft(); if (draftData.passage.length <= 1) return; draftData.passage.splice(i, 1); renderForm(); }
+function addSection() { syncDraft(); draftData.sections.push({ id: genId('sec'), title: "قسم", questions: [{ q: "", options: ["","","",""], answer: 0 }] }); renderSections(); }
+function removeSection(si) { syncDraft(); if (draftData.sections.length <= 1) return; if (!confirm("حذف القسم؟")) return; draftData.sections.splice(si, 1); renderForm(); }
+function addQuestion(si) { syncDraft(); draftData.sections[si].questions.push({ q: "", options: ["","","",""], answer: 0 }); renderSections(); }
+function removeQuestion(si, qi) { syncDraft(); if (draftData.sections[si].questions.length <= 1) return; draftData.sections[si].questions.splice(qi, 1); renderSections(); }
+function applyForm() {
+  syncDraft();
+  const err = validateLesson(draftData);
+  if (err) { showToast('خطأ: ' + err.split('\n')[0], 'error'); return; }
+  const i = library.findIndex(l => l.id === draftData.id);
+  if (i >= 0) library[i] = JSON.parse(JSON.stringify(draftData));
+  else library.push(JSON.parse(JSON.stringify(draftData)));
+  activeId = draftData.id;
+  saveLibrary();
+  closeEditor();
+  renderAll();
+  document.getElementById('lessonTitleBar').textContent = draftData.lessonTitle;
+  renderActiveLesson();
+  document.body.classList.remove('show-answers');
+  currentAnswersVisible = false;
+  document.getElementById('tbToggle').textContent = "👁️ الحل";
+  showToast('✅ تم الحفظ', 'success');
+}
+
+/* Image handling */
+async function handleCoverImageUpload(e) {
+  const files = e.target.files;
+  if (!files || !files.length) return;
+  showToast(`⏳ معالجة ${toArabicNum(files.length)} صورة...`, 'info', 2000);
+  for (const file of Array.from(files)) {
+    try {
+      const dataUrl = await resizeImage(file, 600);
+      uploadedImages.push({ dataUrl, name: file.name });
+    } catch(err) {
+      showToast('فشل تحميل: ' + file.name, 'error');
+    }
+  }
+  renderImageGallery();
+  if (uploadedImages.length > 0 && !draftData.coverImage) {
+    selectImage(0);
+  } else if (uploadedImages.length > 1) {
+    showToast('💡 اضغط على الصورة لاختيارها كغلاف', 'info', 4000);
+  }
+  e.target.value = '';
+}
+function renderImageGallery() {
+  const g = document.getElementById('imageGallery');
+  if (!g) return;
+  if (!uploadedImages.length) { g.innerHTML = ''; return; }
+  g.innerHTML = uploadedImages.map((img, i) => {
+    const selected = draftData.coverImage === img.dataUrl;
+    return `<div class="img-thumb${selected ? ' selected' : ''}" onclick="selectImage(${i})">
+      <img src="${img.dataUrl}" alt="">
+      ${selected ? '<div class="img-check">✓</div>' : ''}
+      <div class="img-name">${escapeHtml(img.name)}</div>
+    </div>`;
+  }).join('');
+}
+function selectImage(i) {
+  if (!uploadedImages[i]) return;
+  draftData.coverImage = uploadedImages[i].dataUrl;
+  renderImageGallery();
+  showImagePreview(uploadedImages[i].dataUrl);
+  document.getElementById('imageStatus').textContent = '✅ ' + uploadedImages[i].name;
+  document.getElementById('imgPathInput').value = '';
+}
+function setImagePath() {
+  const path = document.getElementById('imgPathInput').value.trim();
+  if (!path) { showToast('⚠️ أدخل مسار الصورة', 'warning'); return; }
+  draftData.coverImage = path;
+  showImagePreview(path);
+  document.getElementById('imageStatus').textContent = '✅ مسار: ' + path;
+  renderImageGallery();
+  showToast('✅ تم تعيين مسار الصورة', 'success');
+}
+function removeCoverImage() {
+  draftData.coverImage = null;
+  uploadedImages = [];
+  renderImageGallery();
+  hideImagePreview();
+  document.getElementById('imageStatus').textContent = '';
+  document.getElementById('imgPathInput').value = '';
+}
+function showImagePreview(u) {
+  const w = document.getElementById('imagePreview');
+  w.style.display = 'block';
+  const img = w.querySelector('img');
+  img.src = u;
+  img.onerror = () => { w.style.display = 'none'; showToast('⚠️ تعذر تحميل الصورة', 'warning'); };
+}
+function hideImagePreview() { document.getElementById('imagePreview').style.display = 'none'; }
+function resizeImage(file, max) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > max || height > max) {
+          const rt = Math.min(max / width, max / height);
+          width = Math.round(width * rt); height = Math.round(height * rt);
+        }
+        const c = document.createElement('canvas');
+        c.width = width; c.height = height;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        res(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => rej(new Error("صورة غير صالحة"));
+      img.src = e.target.result;
+    };
+    r.onerror = () => rej(new Error("فشل"));
+    r.readAsDataURL(file);
+  });
+}
+
+/* Settings */
+function openSettings() {
+  closeAllPanels();
+  currentSettings = loadSettings();
+  applySettings(currentSettings);
+  document.getElementById('set_teacherName').value = currentSettings.teacherName;
+  document.getElementById('toggleGlobalStamp').checked = currentSettings.showStamp !== false;
+  document.getElementById('toggleUnifiedColors').checked = currentSettings.unifiedColors === true;
+  const sel = document.getElementById('fontSelect');
+  if (!sel.options.length) sel.innerHTML = FONTS.map(f => `<option value="${escapeAttr(f.value)}">${escapeHtml(f.name)}</option>`).join('');
+  sel.value = currentSettings.fontFamily;
+  document.getElementById('set_passageSize').value = currentSettings.passageSize;
+  document.getElementById('set_questionSize').value = currentSettings.questionSize;
+  document.getElementById('set_optionsSize').value = currentSettings.optionsSize;
+  document.getElementById('set_coverMainTitleSize').value = currentSettings.coverMainTitleSize;
+  document.getElementById('set_coverLessonSize').value = currentSettings.coverLessonSize;
+  updateLabels();
+  renderStorage();
+  document.getElementById('settingsPanel').classList.add('show');
+}
+function closeSettings() {
+  document.getElementById('settingsPanel').classList.remove('show');
+  if (document.getElementById('lessonView').classList.contains('active')) setTimeout(renderActiveLesson, 50);
+}
+function updateLabels() {
+  document.getElementById('val_passageSize').textContent = toArabicNum(currentSettings.passageSize);
+  document.getElementById('val_questionSize').textContent = toArabicNum(currentSettings.questionSize);
+  document.getElementById('val_optionsSize').textContent = toArabicNum(currentSettings.optionsSize);
+  document.getElementById('val_coverMainTitleSize').textContent = toArabicNum(currentSettings.coverMainTitleSize);
+  document.getElementById('val_coverLessonSize').textContent = toArabicNum(currentSettings.coverLessonSize);
+}
+function onGlobalStampToggle() {
+  currentSettings.showStamp = document.getElementById('toggleGlobalStamp').checked;
+  saveSettings(currentSettings);
+  if (document.getElementById('lessonView').classList.contains('active')) setTimeout(renderActiveLesson, 50);
+  showToast(currentSettings.showStamp ? '✅ الختم سيظهر' : '🚫 الختم سيُخفى', 'info', 3000);
+}
+function onUnifiedColorsToggle() {
+  currentSettings.unifiedColors = document.getElementById('toggleUnifiedColors').checked;
+  saveSettings(currentSettings);
+  if (document.getElementById('lessonView').classList.contains('active')) setTimeout(renderActiveLesson, 50);
+}
+function onFontSelectChange() {
+  currentSettings.fontFamily = document.getElementById('fontSelect').value;
+  applySettings(currentSettings);
+  saveSettings(currentSettings);
+  if (document.getElementById('lessonView').classList.contains('active')) setTimeout(renderActiveLesson, 50);
+}
+function cycleFont(dir) {
+  const s = document.getElementById('fontSelect');
+  s.selectedIndex = (s.selectedIndex + dir + FONTS.length) % FONTS.length;
+  onFontSelectChange();
+}
+function onSettingChange() {
+  const tn = document.getElementById('set_teacherName');
+  if (tn) {
+    currentSettings.teacherName = tn.value.trim() || 'أسامة إبراهيم';
+    renderSidebarUser();
+    if (document.getElementById('lessonView').classList.contains('active')) {
+      clearTimeout(_debounceTimer);
+      _debounceTimer = setTimeout(() => renderActiveLesson(), 250);
+    }
+  }
+  const pEl = document.getElementById('set_passageSize');
+  if (pEl) {
+    currentSettings.passageSize = parseFloat(pEl.value);
+    currentSettings.questionSize = parseFloat(document.getElementById('set_questionSize').value);
+    currentSettings.optionsSize = parseFloat(document.getElementById('set_optionsSize').value);
+    currentSettings.coverMainTitleSize = parseFloat(document.getElementById('set_coverMainTitleSize').value);
+    currentSettings.coverLessonSize = parseFloat(document.getElementById('set_coverLessonSize').value);
+    applySettings(currentSettings);
+    saveSettings(currentSettings);
+    updateLabels();
+    if (document.getElementById('lessonView').classList.contains('active')) {
+      clearTimeout(_debounceTimer);
+      _debounceTimer = setTimeout(() => renderActiveLesson(), 250);
+    }
+  }
+}
+function resetSettings() {
+  currentSettings = getDefaultSettings();
+  applySettings(currentSettings);
+  saveSettings(currentSettings);
+  renderSidebarUser();
+  openSettings();
+  showToast('↺ تم استعادة الافتراضي', 'success');
+}
+
+/* Listeners */
+window.addEventListener('DOMContentLoaded', () => {
+  const dz1 = document.getElementById('dashUploadZone');
+  if (dz1) {
+    dz1.addEventListener('click', () => document.getElementById('dashFileInput').click());
+    dz1.addEventListener('dragover', (e) => { e.preventDefault(); dz1.classList.add('dragover'); });
+    dz1.addEventListener('dragleave', () => dz1.classList.remove('dragover'));
+    dz1.addEventListener('drop', (e) => { e.preventDefault(); dz1.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+  }
+  document.getElementById('dashFileInput').addEventListener('change', (e) => { handleFiles(e.target.files); e.target.value = ''; });
+  const dz2 = document.getElementById('modalUploadZone');
+  if (dz2) {
+    dz2.addEventListener('click', () => document.getElementById('modalFileInput').click());
+    dz2.addEventListener('dragover', (e) => { e.preventDefault(); dz2.classList.add('dragover'); });
+    dz2.addEventListener('dragleave', () => dz2.classList.remove('dragover'));
+    dz2.addEventListener('drop', (e) => { e.preventDefault(); dz2.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+  }
+  const dz3 = document.getElementById('imageDropZone');
+  if (dz3) {
+    dz3.addEventListener('click', () => document.getElementById('coverImageInput').click());
+    dz3.addEventListener('dragover', (e) => { e.preventDefault(); dz3.classList.add('dragover'); });
+    dz3.addEventListener('dragleave', () => dz3.classList.remove('dragover'));
+    dz3.addEventListener('drop', (e) => {
+      e.preventDefault(); dz3.classList.remove('dragover');
+      if (!draftData) return;
+      const files = e.dataTransfer?.files;
+      if (files && files.length) {
+        const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+        if (imageFiles.length) handleCoverImageUpload({ target: { files: imageFiles, value: '' } });
+      }
+    });
+  }
+});
+document.addEventListener('paste', (e) => {
+  if (!document.getElementById('editorPanel').classList.contains('show')) return;
+  if (!draftData) return;
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const f = item.getAsFile();
+      if (f) { e.preventDefault(); handleCoverImageUpload({ target: { files: [f], value: '' } }); return; }
+    }
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeAllPanels();
+    if (window.innerWidth <= 960) {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+    }
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    if (draftData) { e.preventDefault(); applyForm(); }
+  }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  currentSettings = loadSettings();
+  applySettings(currentSettings);
+  loadLibrary();
+  renderAll();
+  showView('dashboard');
+  try { await document.fonts.ready; } catch(e) {}
+  const added = await loadFromServer();
+  if (added > 0) renderAll();
+});
+</script>
+</body>
+</html>
