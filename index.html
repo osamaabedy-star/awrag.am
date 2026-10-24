@@ -306,61 +306,65 @@ body.preview-mode .page { outline: 2px dashed var(--primary); outline-offset: 8p
 .unified-lesson-meta { font-size: 9.5pt; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5mm; }
 .unified-lesson-title { font-size: 14pt; font-weight: 800; color: var(--primary-dark); }
 
-/* ★★★ ترويسة النص القرائي الجديدة ★★★ */
+/* ★★★ ترويسة النص القرائي — العنوان بارز في المنتصف ★★★ */
 .passage-header {
-  display: flex;
-  align-items: center;
-  gap: 3mm;
-  padding: 2.5mm 4mm;
-  margin-bottom: 3mm;
-  background: linear-gradient(90deg, var(--primary-light) 0%, transparent 100%);
-  border-radius: 8px;
-  border-bottom: 2px solid var(--primary);
-  flex-shrink: 0;
-}
-.passage-header-badge {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #fff;
-  padding: 1.5mm 3.5mm;
-  border-radius: 20px;
-  font-size: 9pt;
-  font-weight: 700;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  line-height: 1.3;
-  min-width: 26mm;
+  gap: 2mm;
+  padding: 2mm 0 4mm;
+  margin-bottom: 3mm;
+  border-bottom: 2px solid var(--primary);
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(30,96,145,0.25);
-  text-align: center;
+  background: linear-gradient(180deg, var(--primary-light) 0%, transparent 100%);
 }
-.passage-header-badge .unit-name {
-  font-size: 8pt;
-  opacity: 0.92;
-  margin-bottom: 0.5mm;
-}
-.passage-header-badge .lesson-name {
+.passage-header-subtitle {
   font-size: 10pt;
-  font-weight: 900;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3mm;
+  width: 100%;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  padding: 0 4mm;
+  flex-wrap: wrap;
+}
+.passage-header-subtitle .ornament {
+  color: var(--gold);
+  font-size: 9pt;
+  flex-shrink: 0;
+}
+.passage-header-subtitle .subtitle-text {
+  color: var(--primary-dark);
+  font-weight: 700;
 }
 .passage-header-title {
-  flex: 1;
-  font-size: 20pt;
+  font-size: 26pt;
   font-weight: 900;
   color: var(--primary);
   text-align: center;
   margin: 0;
-  line-height: 1.2;
-  padding: 0 2mm;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  line-height: 1.15;
+  padding: 0 6mm;
+  text-shadow: 0 2px 3px rgba(30,96,145,0.12);
   word-wrap: break-word;
+  letter-spacing: 1px;
 }
-.passage-header-spacer {
-  min-width: 26mm;
-  flex-shrink: 0;
+.passage-header-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  height: 1px;
+  margin-top: 1mm;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.5;
 }
-.passage-header.no-badge { justify-content: center; }
 
 .page-passage .passage { font-size: var(--passage-size); line-height: 1.9; color: #111; text-align: justify; flex: 1; padding-top: 2mm; }
 .page-passage .passage p { margin: 0 0 3.5mm; text-indent: 8mm; }
@@ -499,7 +503,7 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
   .page-questions[data-mode="answer"] .q-option.correct .box::before { content: "✓" !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%); color: #c00 !important; font-size: 10pt !important; font-weight: 900 !important; }
   .page-bubble[data-mode="answer"] .bubble.correct .bubble-bg circle { fill: #000 !important; stroke: #000 !important; }
   .page-bubble[data-mode="answer"] .bubble.correct .bubble-letter { color: #fff !important; }
-  .omr-header-main, .omr-header-side, .omr-col-header, .omr-example-correct, .omr-example-wrong, .omr-example-badge, .omr-instructions, .demo-bubble, .demo-bubble svg, .demo-letter, .answer-key-header, .answer-key-table th, .answer-key-table td, .q-text .q-number, .page-number, .cover-frame, .cover-corner, .cover-grade-pill, .cover-term-pill, .cover-ministry, .cover-main-title, .cover-lesson-title, .cover-unit-lesson, .cover-stamp, .cover-stamp-inner, .cover-stamp-text, .cover-stamp-signature, .cover-stamp-divider, .unified-lesson-index, .passage-header-badge, .passage-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .omr-header-main, .omr-header-side, .omr-col-header, .omr-example-correct, .omr-example-wrong, .omr-example-badge, .omr-instructions, .demo-bubble, .demo-bubble svg, .demo-letter, .answer-key-header, .answer-key-table th, .answer-key-table td, .q-text .q-number, .page-number, .cover-frame, .cover-corner, .cover-grade-pill, .cover-term-pill, .cover-ministry, .cover-main-title, .cover-lesson-title, .cover-unit-lesson, .cover-stamp, .cover-stamp-inner, .cover-stamp-text, .cover-stamp-signature, .cover-stamp-divider, .unified-lesson-index, .passage-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
 @media screen and (max-width: 850px) {
@@ -514,10 +518,8 @@ body.show-answers .page-bubble .bubble.correct .bubble-letter { color: #fff; }
   .omr-header { flex-direction: column; }
   .lesson-card { flex-direction: column; align-items: flex-start; }
   .stats-grid { grid-template-columns: 1fr; }
-  .passage-header { flex-direction: column; gap: 2mm; }
-  .passage-header-title { font-size: 16pt; }
-  .passage-header-badge { min-width: auto; flex-direction: row; gap: 3mm; }
-  .passage-header-spacer { display: none; }
+  .passage-header-title { font-size: 20pt; }
+  .passage-header-subtitle { font-size: 9pt; }
 }
 </style>
 </head>
@@ -870,10 +872,10 @@ const FONTS = [
   { name: "Times New Roman", value: "'Times New Roman', Times, serif" }
 ];
 const ARABIC_LETTERS = ["أ", "ب", "ج", "د"];
-const LIBRARY_KEY = 'reading_ws_library_v19';
-const ACTIVE_KEY = 'reading_ws_active_id_v19';
-const SETTINGS_KEY = 'reading_ws_settings_v19';
-const DELETED_KEY = 'reading_ws_deleted_v19';
+const LIBRARY_KEY = 'reading_ws_library_v20';
+const ACTIVE_KEY = 'reading_ws_active_id_v20';
+const SETTINGS_KEY = 'reading_ws_settings_v20';
+const DELETED_KEY = 'reading_ws_deleted_v20';
 const STORAGE_LIMIT = 5 * 1024 * 1024;
 
 const DEFAULT_LESSON = {
@@ -1478,23 +1480,29 @@ function renderQuestionBlock(q, num) {
   return html;
 }
 
-/* ★ ترويسة صفحة النص — الوحدة والدرس + العنوان في المنتصف ★ */
+/* ★★★ ترويسة النص — العنوان ٢٦pt بارز في المنتصف ★★★ */
 function buildPassageHeader(lesson) {
   const unitName = (lesson.unitName || '').trim();
   const lessonLabel = (lesson.lessonLabel || '').trim();
-  const hasBadge = unitName || lessonLabel;
-  if (!hasBadge) {
-    return `<div class="passage-header no-badge">
-      <h2 class="passage-header-title">${escapeHtml(lesson.lessonTitle)}</h2>
-    </div>`;
-  }
+  const title = (lesson.lessonTitle || 'بدون عنوان').trim();
+
+  const unitLessonParts = [];
+  if (unitName) unitLessonParts.push(unitName);
+  if (lessonLabel) unitLessonParts.push(lessonLabel);
+  const unitLessonText = unitLessonParts.join(' — ');
+
+  const subtitleHtml = unitLessonText
+    ? `<div class="passage-header-subtitle">
+         <span class="ornament">❁</span>
+         <span class="subtitle-text">${escapeHtml(unitLessonText)}</span>
+         <span class="ornament">❁</span>
+       </div>`
+    : '';
+
   return `<div class="passage-header">
-    <div class="passage-header-badge">
-      ${unitName ? `<div class="unit-name">${escapeHtml(unitName)}</div>` : ''}
-      ${lessonLabel ? `<div class="lesson-name">${escapeHtml(lessonLabel)}</div>` : ''}
-    </div>
-    <h2 class="passage-header-title">${escapeHtml(lesson.lessonTitle)}</h2>
-    <div class="passage-header-spacer"></div>
+    ${subtitleHtml}
+    <h2 class="passage-header-title">${escapeHtml(title)}</h2>
+    <div class="passage-header-divider"></div>
   </div>`;
 }
 
@@ -1709,7 +1717,6 @@ function renderUnifiedCover(lessons) {
   </div>${footerHtml()}`;
 }
 
-/* ★ renderPassage — يستخدم الترويسة الجديدة ★ */
 function renderPassage(pd) {
   const { lesson, paragraphs, partNum, totalParts } = pd;
   let headerHtml = '';
